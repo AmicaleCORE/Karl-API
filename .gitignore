@@ -1,0 +1,11 @@
+# JetBrains IDE
+.idea/
+
+# Compiled TS code output
+dist/
+
+# Node modules
+node_modules/
+
+# Environment file
+.env
