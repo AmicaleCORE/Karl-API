@@ -1,0 +1,21 @@
+name: Check TypeScript code
+
+on: [push, pull_request]
+
+jobs:
+  ts-linter:
+    name: Run linters
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out Git repository
+        uses: actions/checkout@v3
+      - name: Set up Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: "18.x"
+      - name: Install Node.js dependencies
+        run: npm ci
+      - name: Run TS linter
+        uses: wearerequired/lint-action@v2
+        with:
+          tsc: true
