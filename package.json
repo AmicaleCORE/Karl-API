@@ -1,0 +1,25 @@
+{
+  "name": "karl-api",
+  "version": "0.0.1",
+  "description": "- [Setup](#setup)",
+  "main": "src/App.ts",
+  "scripts": {
+    "dev": "nodemon --watch src -e js,ts,json --exec \"ts-node src/App.ts\"",
+    "build": "tsup src/App.ts --format cjs --clean",
+    "start": "node dist/App.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/AmicaleCORE/Karl-API.git"
+  },
+  "author": "Amicale CORE",
+  "license": "GPL-3.0",
+  "bugs": {
+    "url": "https://github.com/AmicaleCORE/Karl-API/issues"
+  },
+  "homepage": "https://github.com/AmicaleCORE/Karl-API#readme",
+  "dependencies": {
+    "@types/sequelize": "^4.28.14",
+    "sequelize": "^6.28.0"
+  }
+}
