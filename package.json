@@ -2,7 +2,7 @@
   "name": "karl-api",
   "version": "0.0.1",
   "description": "Karl Rest API used everywhere at the Amicale CORE.",
-  "main": "src/App.ts",
+  "main": "src/App.js",
   "scripts": {
     "dev": "nodemon --watch src -e js,ts,json --exec \"ts-node src/App.ts\"",
     "start": "npm install ; node .",
