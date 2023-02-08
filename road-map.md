@@ -6,7 +6,7 @@ Dernière mise à jour le : `8 février 2023`
 ## Introduction
 Bienvenue sur l'API Rest de Karl. Mais, ***<span style="text-decoration:underline">Karl, c'est quoi</span> ?***.
 > **Karl** est une version améliorée des instances de gestion de l'Amicale CORE.  
-> En effet, ayant pu constaté son instabilité sur certains points, son inaccessibilité sur d'autre et son manque de scalabilité sur les derniers, nous avons décidé de nous lancer dans le développement d'une alternative plus complète, compréhensible, scalable et sécurisé que l'actuel Seb qu'utilise l'Amicale CORE.
+> En effet, ayant pu constater son instabilité sur certains points, son inaccessibilité sur d'autre et son manque de scalabilité sur les derniers, nous avons décidé de nous lancer dans le développement d'une alternative plus complète, compréhensible, scalable et sécurisé que l'actuel Seb qu'utilise l'Amicale CORE.
 
 Reprenons sur de bonnes bases pour faciliter son utilisation aux générations futures et à sa facilité de maintenance.
 
@@ -22,7 +22,7 @@ Reprenons sur de bonnes bases pour faciliter son utilisation aux générations f
 ## Routes
 
 ### Routes classiques
-Les routes ci-dessous sont les routes accessible publiquement, sans permissions particulière et sans besoin d'authentification. Elle permettent notamment au•x développeur•s de vérifier la disponibilité de celle-ci ou son non fonctionnement.
+Les routes ci-dessous sont les routes accessibles publiquement, sans permissions particulières et sans besoin d'authentification. Elles permettent notamment au•x développeur•s de vérifier la disponibilité de celle-ci ou son non-fonctionnement.
 
 #### /
 `GET` : Récupération des informations de status de l'API (fonctionnement direct).
@@ -36,8 +36,8 @@ Les routes ci-dessous sont les routes accessible publiquement, sans permissions 
 > ```
 
 ### Authentification
-L'authentification est une partie cruciale de notre API puisque nous stockons des ressources sensibles notamment les données comptables, des informations utilisateurs mais aussi l'intégralité des stocks de l'Amicale.  
-C'est pourquoi, pour la plupart des requêtes qui seront effectuées, il faudra être authentifié mais aussi avoir les permissions de la faire.
+L'authentification est une partie cruciale de notre API puisque nous stockons des ressources sensibles notamment les données comptables, des informations utilisateurs, mais aussi l'intégralité des stocks de l'Amicale.  
+C'est pourquoi, pour la plupart des requêtes qui seront effectuées, il faudra être authentifié, mais aussi avoir les permissions de la faire.
 
 #### /auth/login
 `POST` : Permet à un utilisateur de s'authentifier et de récupérer un token de connexion avec une durée de validité de 24h.
