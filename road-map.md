@@ -113,13 +113,13 @@ C'est pourquoi, pour la plupart des requêtes qui seront effectuées, il faudra 
 > **Code 200 :**
 > ```json
 > {
->   "message": "You [auth | reset] token is valid."
+>   "message": "Your [auth | reset] token is valid."
 > }
 > ```
 > **Code 401 :**
 > ```json
 > {
->   "message": "You [auth | reset] token is invalid! Login again."
+>   "message": "Your [auth | reset] token is invalid! Login again."
 > }
 > ```
 
