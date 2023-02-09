@@ -13,8 +13,9 @@ members | A user is created after the "/register" command on Discord
   updatedAt date | Indicate when the member has been updated
 
 personal_accounts | Represents the personal account of a member
-  member_id int pk | Member owner of the account
-  card_id text | ID of the student card's QR code
+  id int pk | ID of the account
+  member_id int unique | Member owner of the account
+  card_id text unique | ID of the student card's QR code
   amount number = 0.0 | Amount of money in the account
   createdAt date | Indicate when the account has been created
   updatedAt date | Indicate when the account has been updated
@@ -50,7 +51,7 @@ transaction_types
   name varchar(255) unique
 
 transactions | Represents a transaction between two accounts (source and target can be external accounts)
-  code varchar(16) pk | Composed of : src + tgt + type + randCode
+  code varchar(16) pk | Formatting : src + tgt + type + randCode
   description text nullable
   billing_id int nullable unique | ID of the billing if the transaction is linked to one (for future billing scanning)
   user_id varchar(255) nullable | ID of the user who created the transaction, null if done by the system
@@ -58,7 +59,7 @@ transactions | Represents a transaction between two accounts (source and target 
   type_id int
   source int nullable | ID of the source account, null if external
   target int nullable | ID of the target account, null if external
-  amount number
+  amount number | Amount of the transaction
   createdAt date
 
 accounting_accounts | Represents an accounting account
@@ -70,7 +71,7 @@ accounting_accounts | Represents an accounting account
 
 personal_transactions | Represents a transaction on a personal account (refill or product purchase)
   code varchar(255) pk | Formatting: accountId + type + randCode
-  member_id int | ID of the personal account (the member id)
+  account_id int | ID of the personal account (the member id)
   amount number | Amount of the transaction
   type_id int | ID of the type of the transaction
   sell_code varchar(255) nullable | ID of the sell, only if the transaction is a product purchase
@@ -82,7 +83,7 @@ fk transactions.type_id -> transaction_types.id
 fk transactions.source -> accounting_accounts.id
 fk transactions.target -> accounting_accounts.id
 fk transactions.user_id -> users.id
-fk personal_transactions.member_id -> personal_accounts.member_id
+fk personal_transactions.account_id -> personal_accounts.id
 fk personal_transactions.type_id -> transaction_types.id
 fk personal_transactions.sell_code -> sales.code
 
