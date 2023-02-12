@@ -30,7 +30,8 @@ users | Represents a user of the website
   id int pk | ID of the user
   username varchar(255) unique | Formatting: surname.name
   email varchar(255) unique | Formatting: surname.name@amicalecore.org
-  password text | Bcrypt hash of the password
+  password text nullable | Bcrypt hash of the password
+  validation_code varchar(6) nullable | Code used to set the password for the first login
   group_id int | Group of permissions
   createdAt date | Indicate when the user has been created
   updateAt date | Indicate when the user has been updated
