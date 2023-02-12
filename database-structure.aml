@@ -102,14 +102,7 @@ sale_types | Represents the type of a sale
   id int pk | 1: Cash, 2: SumUp, 3: Personal account
   name varchar(255) unique | Cash, SumUp, Personal account
 
-sold_products | Represents a product sold
-  sell_code varchar(255) pk | ID of the sell
-  amount int | Amount of product sold (for a given sale)
-  product_id int | ID of the product sold
-
 # FKs
-fk sold_products.product_id -> products.id
-fk sold_products.sell_code -> sales.code
 fk sales.author_id -> users.id
 fk sales.type_id -> sale_types.id
 
@@ -129,8 +122,21 @@ products | Represents a product
   alert_amount int = 0 | Amount of product under which an alert is sent
   createdAt date
 
+product_movements
+  id int pk
+  operation_code text
+  product_id int
+  change int | Change applied to the product stock quantity
+  type text
+  process_date datetime nullable
+  createdAt date
+
 # FKs
 fk products.category_id -> product_categories.id
+fk product_movements.operation_code -> refill.code
+fk product_movements.operation_code -> sales.code
+fk product_movements.operation_code -> stock_corrections.code
+fk product_movements.product_id -> products.id
 
 
 #=========# PERMISSIONS #=========#
@@ -152,3 +158,20 @@ associations | Represents the association between a group and a permission
 # FKs
 fk associations.group_id -> groups.id
 fk associations.permission_id -> permissions.id
+
+
+#=========# STOCKS #=========#
+
+refill
+  code text pk
+  transaction_code text
+  createdAt date
+
+stock_corrections
+  code text pk
+  author_id int
+  createdAt date
+
+# FKs
+fk refill.transaction_code -> transactions.code
+fk stock_corrections.author_id -> users.id
