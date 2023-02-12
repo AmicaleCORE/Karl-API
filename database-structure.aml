@@ -109,27 +109,27 @@ fk sales.type_id -> sale_types.id
 
 #=========# PRODUCTS #=========#
 
-product_categories
-  id int pk
-  name varchar(255) unique
+product_categories | Represents the category of a product
+  id int pk | ID of the category
+  name varchar(255) unique | Name of the category
 
 products | Represents a product
-  id int pk
-  name varchar(255) unique
+  id int pk | ID of the product
+  name varchar(255) unique | Name of the product
   unit_price number | Price of one unit of the product
-  category_id int
+  category_id int | ID of the category of the product
   stock_amount int = 0 | Amount of product in stock
   alert_amount int = 0 | Amount of product under which an alert is sent
-  createdAt date
+  createdAt date | Indicate when the product has been created
 
-product_movements
-  id int pk
-  operation_code text
-  product_id int
-  change int | Change applied to the product stock quantity
-  type text
-  process_date datetime nullable
-  createdAt date
+product_movements | Represents a movement of a product (refill, sale, stock correction)
+  id int pk | ID of the movement
+  operation_code text | code of the operation (pointing of the refill, sale or stock correction code field)
+  product_id int | ID of the product
+  change int | Change applied to the product stock quantity (+/-)
+  type text | Type of the movement (refill, sale, correction)
+  process_date datetime nullable | Indicate when the movement has been processed, null if not processed
+  createdAt date | Indicate when the movement has been created
 
 # FKs
 fk products.category_id -> product_categories.id
@@ -162,15 +162,15 @@ fk associations.permission_id -> permissions.id
 
 #=========# STOCKS #=========#
 
-refill
-  code text pk
-  transaction_code text
-  createdAt date
+refill | Represents a refill of the stock
+  code text pk | Formatting: "r" + randCode
+  transaction_code text unique | ID of the transaction
+  createdAt date | Indicate when the refill has been created
 
-stock_corrections
-  code text pk
-  author_id int
-  createdAt date
+stock_corrections | Represents a correction of the stock
+  code text pk | Formatting: "c" + randCode
+  author_id int | ID of the user who created the correction
+  createdAt date | Indicate when the correction has been created
 
 # FKs
 fk refill.transaction_code -> transactions.code
