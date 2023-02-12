@@ -127,9 +127,13 @@ product_movements | Represents a movement of a product (refill, sale, stock corr
   operation_code text | code of the operation (pointing of the refill, sale or stock correction code field)
   product_id int | ID of the product
   change int | Change applied to the product stock quantity (+/-)
-  type text | Type of the movement (refill, sale, correction)
+  movement_type int | Type of the movement (1: Refill, 2: Sale, 3: Stock correction)
   process_date datetime nullable | Indicate when the movement has been processed, null if not processed
   createdAt date | Indicate when the movement has been created
+
+movement_types | Represents the type of a movement
+  id int pk | 1: Refill, 2: Sale, 3: Stock correction
+  name varchar(255) unique | Refill, Sale, Stock correction
 
 # FKs
 fk products.category_id -> product_categories.id
@@ -137,6 +141,7 @@ fk product_movements.operation_code -> refill.code
 fk product_movements.operation_code -> sales.code
 fk product_movements.operation_code -> stock_corrections.code
 fk product_movements.product_id -> products.id
+fk product_movements.movement_type -> movement_types.id
 
 
 #=========# PERMISSIONS #=========#
