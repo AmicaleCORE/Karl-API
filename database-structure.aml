@@ -84,6 +84,7 @@ fk transactions.type_id -> transaction_types.id
 fk transactions.source -> accounting_accounts.id
 fk transactions.target -> accounting_accounts.id
 fk transactions.user_id -> users.id
+fk transactions.billing_id -> pictures.id
 fk personal_transactions.account_id -> personal_accounts.id
 fk personal_transactions.type_id -> transaction_types.id
 fk personal_transactions.sell_code -> sales.code
@@ -118,6 +119,7 @@ products | Represents a product
   name varchar(255) unique | Name of the product
   unit_price number | Price of one unit of the product
   category_id int | ID of the category of the product
+  picture_id int nullable | ID of the picture of the product
   stock_amount int = 0 | Amount of product in stock
   alert_amount int = 0 | Amount of product under which an alert is sent
   createdAt date | Indicate when the product has been created
@@ -137,6 +139,7 @@ movement_types | Represents the type of a movement
 
 # FKs
 fk products.category_id -> product_categories.id
+fk products.picture_id -> pictures.id
 fk product_movements.operation_code -> refill.code
 fk product_movements.operation_code -> sales.code
 fk product_movements.operation_code -> stock_corrections.code
@@ -180,3 +183,21 @@ stock_corrections | Represents a correction of the stock
 # FKs
 fk refill.transaction_code -> transactions.code
 fk stock_corrections.author_id -> users.id
+
+
+#=========# PICTURES #=========#
+
+pictures | Represents a picture
+  id int pk | ID of the picture
+  name text unique | Name of the picture
+  path text unique | Path of the picture
+  type text | Type of the picture (billing, product, etc.)
+  createdAt date | Indicate when the picture has been created
+  updatedAt date | Indicate when the picture has been updated
+
+picture_types | Represents the type of a picture
+  id int pk | 1: Billing, 2: Product
+  name text unique | Billing, Product
+
+# FKs
+fk pictures.type -> picture_types.id
