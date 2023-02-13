@@ -17,7 +17,8 @@ module.exports = (orm: Sequelize) => {
             type: DataTypes.STRING(255)
         },
         membership_date: {
-            type: DataTypes.DATE
+            type: DataTypes.DATE,
+            allowNull: true
         }
     }, {
         timestamps: true,
