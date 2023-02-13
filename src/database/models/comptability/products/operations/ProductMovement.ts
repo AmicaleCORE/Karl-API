@@ -1,4 +1,5 @@
 import {Sequelize, DataTypes} from "sequelize";
+import {MovementType} from "~/database/models/enums/MovementType";
 
 module.exports = (orm: Sequelize) => {
     return orm.define("product_movement", {

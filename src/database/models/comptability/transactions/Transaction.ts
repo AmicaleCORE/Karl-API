@@ -1,4 +1,5 @@
 import {DataTypes, Sequelize} from "sequelize";
+import {TransactionFlow} from "~/database/models/enums/TransactionFlow";
 
 module.exports = (orm: Sequelize) => {
     return orm.define(`transaction`, {
