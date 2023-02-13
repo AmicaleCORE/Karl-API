@@ -10,10 +10,10 @@ const app: Express = express()
 app
     .use(express.json()) // Body to JSON
 
-require('~/framework/handlers/RouteHandler')(app)
+// require('~/framework/handlers/RouteHandler')(app)
 
 const port: number = parseInt(process.env.PORT || '3000')
 app.listen(port, () => {
-    initDatabase(false)
+    initDatabase(true)
     console.log(`Listening on: http://localhost:${port}/`)
 })
