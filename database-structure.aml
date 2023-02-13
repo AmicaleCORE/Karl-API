@@ -57,6 +57,7 @@ transactions | Represents a transaction between two accounts (source and target 
   source int nullable | ID of the source account, null if external
   target int nullable | ID of the target account, null if external
   amount number | Amount of the transaction
+  correction_id int nullable | ID of the correction if the transaction has been corrected
   createdAt date
 
 accounting_accounts | Represents an accounting account
@@ -88,6 +89,16 @@ periodic_transaction
   createdAt date | Indicate when the periodic transaction has been created
   updatedAt date | Indicate when the periodic transaction has been updated
 
+transaction_correction | Represents a correction of a transaction
+  id int pk | ID of the correction
+  type_id int | ID of the type of the correction
+  reason text | Reason of the correction
+  transaction_id int | ID of the transaction to correct
+
+correction_types | Represents the type of a correction (cashier error for example)
+  id int pk | ID of the correction type
+  name varchar(255) unique | Name of the correction type
+
 # FKs
 fk transactions.category_id -> transaction_categories.id
 fk transactions.source -> accounting_accounts.id
@@ -97,9 +108,10 @@ fk transactions.billing_id -> pictures.id
 fk personal_transactions.account_id -> personal_accounts.id
 fk personal_transactions.sell_code -> sales.code
 fk periodic_transaction.category_id -> transaction_categories.id
-fk periodic_transaction.type_id -> transaction_types.id
 fk periodic_transaction.source -> accounting_accounts.id
 fk periodic_transaction.target -> accounting_accounts.id
+fk transaction_correction.type_id -> correction_types.id
+fk transaction_correction.transaction_id -> transactions.code
 
 
 #=========# SALES #=========#
