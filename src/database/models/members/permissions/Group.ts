@@ -12,7 +12,8 @@ module.exports = (orm: Sequelize) => {
             unique: true
         },
         default: {
-            type: DataTypes.BOOLEAN
+            type: DataTypes.BOOLEAN,
+            defaultValue: false
         }
     }, {
         timestamps: true,
