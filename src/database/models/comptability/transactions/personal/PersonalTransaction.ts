@@ -3,7 +3,7 @@ import {DataTypes, Sequelize} from "sequelize";
 module.exports = (orm: Sequelize) => {
     return orm.define('personal_transaction', {
         code: {
-            type: DataTypes.STRING,
+            type: DataTypes.STRING(15),
             primaryKey: true
         },
         account_id: {
@@ -17,7 +17,7 @@ module.exports = (orm: Sequelize) => {
             values: Object.values(TransactionFlow)
         },
         sale_code: {
-            type: DataTypes.STRING,
+            type: DataTypes.STRING(9),
             allowNull: true
         }
     },

@@ -11,7 +11,7 @@ module.exports = (orm: Sequelize) => {
             type: DataTypes.INTEGER
         },
         card_id: {
-            type: DataTypes.INTEGER,
+            type: DataTypes.TEXT,
             unique: true
         },
         amount: {

@@ -11,10 +11,10 @@ module.exports = (orm: Sequelize) => {
             type: DataTypes.INTEGER
         },
         name: {
-            type: DataTypes.STRING
+            type: DataTypes.STRING(255)
         },
         path: {
-            type: DataTypes.STRING
+            type: DataTypes.TEXT
         }
     }, {
         timestamps: true,

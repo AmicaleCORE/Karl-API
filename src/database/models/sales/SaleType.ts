@@ -8,7 +8,7 @@ module.exports = (orm: Sequelize) => {
             autoIncrement: true
         },
         name: {
-            type: DataTypes.STRING
+            type: DataTypes.STRING(255)
         }
     }, {
         timestamps: false,

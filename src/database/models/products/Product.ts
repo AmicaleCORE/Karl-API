@@ -8,7 +8,7 @@ module.exports = (orm: Sequelize) => {
             autoIncrement: true
         },
         name: {
-            type: DataTypes.TEXT,
+            type: DataTypes.STRING(255),
             unique: true
         },
         unit_price: {

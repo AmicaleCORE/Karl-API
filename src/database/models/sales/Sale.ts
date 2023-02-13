@@ -3,7 +3,7 @@ import {DataTypes, Sequelize} from "sequelize";
 module.exports = (orm: Sequelize) => {
     return orm.define('sale', {
         code: {
-            type: DataTypes.STRING,
+            type: DataTypes.STRING(9),
             primaryKey: true
         },
         author_id: {
