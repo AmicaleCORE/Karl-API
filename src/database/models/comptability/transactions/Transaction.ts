@@ -19,8 +19,7 @@ module.exports = (orm: Sequelize) => {
             allowNull: true
         },
         category_id: {
-            type: DataTypes.INTEGER,
-            allowNull: true
+            type: DataTypes.INTEGER
         },
         flow: {
             type: DataTypes.ENUM,

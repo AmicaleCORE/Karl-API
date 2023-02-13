@@ -11,7 +11,8 @@ module.exports = (orm: Sequelize) => {
             type: DataTypes.INTEGER
         },
         transaction_code: {
-            type: DataTypes.STRING
+            type: DataTypes.STRING,
+            allowNull: true
         },
         reason: {
             type: DataTypes.TEXT

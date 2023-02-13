@@ -21,7 +21,8 @@ module.exports = (orm: Sequelize) => {
             type: DataTypes.INTEGER
         },
         picture_id: {
-            type: DataTypes.INTEGER
+            type: DataTypes.INTEGER,
+            allowNull: true
         },
         stock_amount: {
             type: DataTypes.INTEGER
