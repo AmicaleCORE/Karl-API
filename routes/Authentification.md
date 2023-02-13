@@ -16,7 +16,7 @@ C'est pourquoi, pour la plupart des requêtes qui seront effectuées, il faudra 
 > ```
 
 **Réponse de la route :**
-> **Code 200 :** Utilisateur authentifié.
+> **Code 200 :** L'utilisateur a été authentifié.
 > ```json
 > {
 >   "message": "User successfully authenticated.",
@@ -46,7 +46,7 @@ C'est pourquoi, pour la plupart des requêtes qui seront effectuées, il faudra 
 > ```
 
 **Réponses de la route :**
-> **Code 200 :** Nouveau jeton d'authentification généré.
+> **Code 200 :** Un nouveau jeton d'authentification a été généré.
 > ```json
 > {
 >   "message": "New token successfully generated.",
@@ -67,7 +67,7 @@ C'est pourquoi, pour la plupart des requêtes qui seront effectuées, il faudra 
 > ```
 
 **Réponses de la route :**
-> **Code 200 :** Jeton d'authentification valide.
+> **Code 200 :** Le jeton d'authentification est valide.
 > ```json
 > {
 >   "message": "Your [auth | reset] token is valid."
