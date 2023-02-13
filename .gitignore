@@ -9,3 +9,6 @@ node_modules/
 
 # Environment file
 .env
+
+# Databases
+*.db
