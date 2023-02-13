@@ -1,3 +1,5 @@
+import {initDatabase} from "~/database/Orm";
+
 require('dotenv')
 import {Express} from "express";
 const express = require('express')
@@ -15,5 +17,6 @@ require('~/framework/handlers/RouteHandler')(app)
 
 const port: number = parseInt(process.env.PORT || '3000')
 app.listen(port, () => {
+    initDatabase(false)
     console.log(`Listening on: http://localhost:${port}/`)
 })
