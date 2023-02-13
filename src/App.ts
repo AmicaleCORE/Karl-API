@@ -14,6 +14,6 @@ require('~/framework/handlers/RouteHandler')(app)
 
 const port: number = parseInt(process.env.PORT || '3000')
 app.listen(port, () => {
-    initDatabase(false)
+    initDatabase(true)
     console.log(`Listening on: http://localhost:${port}/`)
 })
