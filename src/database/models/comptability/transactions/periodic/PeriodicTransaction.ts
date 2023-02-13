@@ -40,7 +40,7 @@ module.exports = (orm: Sequelize) => {
         },
         period: {
             type: DataTypes.ENUM,
-            values: Object.values(PeriodicTransactionPeriod)
+            values: Object.values(TransactionPeriod)
         }
     }, {
         timestamps: true,

@@ -1,4 +1,4 @@
-enum PeriodicTransactionPeriod {
+enum TransactionPeriod {
     WEEKLY = "WEEKLY",
     MONTHLY = "MONTHLY",
     YEARLY = "YEARLY"
