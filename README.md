@@ -12,8 +12,9 @@ Reprenons sur de bonnes bases pour faciliter son utilisation aux générations f
 
 ## Table des matières
 - [Setup](#setup)
+- [Permissions](#permissions)
 - [Codes de réponses généraux](./routes/Codes.md)
-- Routes
+- [Routes](#routes)
     - [Routes classiques](./routes/Classiques.md)
     - [Authentification](./routes/Authentification.md)
         - [/auth/login](./routes/Authentification.md)
@@ -38,3 +39,9 @@ cd [target-name] # Move to your folder
 npm install # Install the project dependencies
 npm run start # Start the default script
 ```
+
+## Permissions
+Todo...
+
+## Routes
+Todo...
