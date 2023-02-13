@@ -1,6 +1,6 @@
 import {Sequelize, DataTypes} from "sequelize";
-import {TransactionFlow} from "~/database/models/enums/TransactionFlow";
-import {TransactionPeriod} from "~/database/models/enums/TransactionPeriod";
+import {TransactionFlow} from "~/database/enums/TransactionFlow";
+import {TransactionPeriod} from "~/database/enums/TransactionPeriod";
 
 module.exports = (orm: Sequelize) => {
     return orm.define(`periodic_transaction`, {
