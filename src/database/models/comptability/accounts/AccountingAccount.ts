@@ -13,10 +13,7 @@ module.exports = (orm: Sequelize) => {
         },
         amount: {
             type: DataTypes.FLOAT,
-            defaultValue: 0,
-            validate: {
-                min: 0
-            }
+            defaultValue: 0
         }
     }, {
         timestamps: true,
