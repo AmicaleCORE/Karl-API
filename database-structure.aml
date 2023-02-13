@@ -51,7 +51,7 @@ transactions | Represents a transaction between two accounts (source and target 
   code varchar(15) pk | Formatting : src + tgt + type + randCode
   description text nullable
   billing_id int nullable unique | ID of the billing if the transaction is linked to one (for future billing scanning)
-  user_id varchar(255) nullable | ID of the user who created the transaction, null if done by the system
+  user_id int nullable | ID of the user who created the transaction, null if done by the system
   category_id int | ID of the category of the transaction
   flow varchar(255) | Flow of the transaction (debit or credit)
   source int nullable | ID of the source account, null if external
@@ -93,7 +93,7 @@ transaction_correction | Represents a correction of a transaction
   id int pk | ID of the correction
   type_id int | ID of the type of the correction
   reason text | Reason of the correction
-  transaction_code varchar(15) | Code of the transaction to correct
+  transaction_code varchar(15) nullable | Code of the transaction to correct
 
 correction_types | Represents the type of a correction (cashier error for example)
   id int pk | ID of the correction type
@@ -154,13 +154,9 @@ product_movements | Represents a movement of a product (refill, sale, stock corr
   operation_code varchar(9) | code of the operation (pointing of the refill, sale or stock correction code field)
   product_id int | ID of the product
   change int | Change applied to the product stock quantity (+/-)
-  movement_type int | Type of the movement (1: Refill, 2: Sale, 3: Stock correction)
+  movement_type text | Type of the movement (Refill, Sale, Stock correction)
   process_date datetime nullable | Indicate when the movement has been processed, null if not processed
   createdAt date | Indicate when the movement has been created
-
-movement_types | Represents the type of a movement
-  id int pk | 1: Refill, 2: Sale, 3: Stock correction
-  name varchar(255) unique | Refill, Sale, Stock correction
 
 # FKs
 fk products.category_id -> product_categories.id
@@ -169,7 +165,6 @@ fk product_movements.operation_code -> refill.code
 fk product_movements.operation_code -> sales.code
 fk product_movements.operation_code -> stock_corrections.code
 fk product_movements.product_id -> products.id
-fk product_movements.movement_type -> movement_types.id
 
 
 #=========# PERMISSIONS #=========#
