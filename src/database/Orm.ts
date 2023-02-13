@@ -1,4 +1,5 @@
 import {Sequelize} from "sequelize";
+import {applyForeignKeys} from "~/framework/functions/Models";
 
 const orm: Sequelize = new Sequelize({
     storage: 'database.db',
@@ -10,6 +11,8 @@ const orm: Sequelize = new Sequelize({
 })
 
 export const models = require('~/framework/handlers/ModelHandler')(orm)
+
+applyForeignKeys()
 
 export function initDatabase(force: boolean) {
     orm.sync({ force }).then(_ => {
