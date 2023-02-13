@@ -9,16 +9,19 @@ Les membres sont la représentation virtuelle d'une personne physique nous perme
 ## /members/
 `GET` : Récupérer tous les membres enregistrés dans la base de données ainsi que leurs informations primaires.
 
-Permission : Voir les membres (`see_members`)
+Permission : Voir les membres (`members.see`)
+
+Paramètres :
+- `limit` : Limite le nombre d'utilisateurs récupérés.
 
 **Réponses de la route :**
 > **Code 200 :** Liste des membres récupérée.
 > ```json
 > {
 >   "message": "Members list has been recovered!",
->   "users": [
+>   "members": [
 >     {
->       "id": "__user_id__",
+>       "id": "__id__",
 >       "discord_id": "__discord_id__",
 >       "first_name": "__first_name__",
 >       "last_name": "__last_name__",
@@ -33,11 +36,11 @@ Permission : Voir les membres (`see_members`)
 > }
 > ```
 > ---
-> **Code 206 :** Aucun membre enregistré.
+> **Code 204 :** Aucun membre enregistré.
 ---
 `POST`: Enregistrer un membre dans la base de données
 
-Permission : Créer un membre (`create_member`)
+Permission : Créer un membre (`members.create`)
 
 **Corps de la requête :**
 > ```json
@@ -49,11 +52,11 @@ Permission : Créer un membre (`create_member`)
 > ```
 
 **Réponse de la route :**
-> **Code 200 :**
+> **Code 201 :** Le membre a été créé.
 > ```json
 > {
 >   "message": "Member created!",
->   "user": {
+>   "member": {
 >       "id": "__id__",
 >       "discord_id": "__discord_id__",
 >       "first_name": "__first_name__",
@@ -68,14 +71,14 @@ Permission : Créer un membre (`create_member`)
 ## /members/:id
 `GET` : Récupération des informations d'un membre ciblé par son identifiant (`id`).
 
-Permission : Récupération d'un membre (`recover-member`).
+Permission : Récupération d'un membre (`members.get`).
 
 **Réponses de la route :**
 > **Code 200 :** Le membre a été récupéré.
 > ```json
 > {
 >   "message": "Member recovered",
->   "user": {
+>   "member": {
 >       "id": "__id__",
 >       "discord_id": "__discord_id__",
 >       "first_name": "__first_name__",
@@ -89,7 +92,7 @@ Permission : Récupération d'un membre (`recover-member`).
 ---
 `PUT` : Modifier un membre ciblé par son identifiant (`id`).
 
-Permission : Modification d'un membre (`update-membre`).
+Permission : Modifier un membre (`members.update`).
 
 **Corps de la requête :**
 > ```json
@@ -102,11 +105,11 @@ Permission : Modification d'un membre (`update-membre`).
 > ```
 
 **Réponse de la requête :**
-> **Code 200 :** Membre mis à jour.
+> **Code 200 :** Le membre a été mis à jour.
 > ```json
 > {
 >   "message": "Member has been updated!",
->   "user": {
+>   "member": {
 >       "id": "__id__",
 >       "discord_id": "__discord_id__",
 >       "first_name": "__first_name__",
@@ -120,14 +123,14 @@ Permission : Modification d'un membre (`update-membre`).
 ---
 `DELETE` : Supprimer un membre ciblé par son identifiant (`id`).
 
-Permission : Supprimer un membre (`delete-member`)
+Permission : Supprimer un membre (`members.delete`)
 
 **Réponse de la route :**
-> **Code 200 :** Membre supprimé.
+> **Code 200 :** Le membre a été supprimé.
 > ```json
 > {
 >   "message": "Member has been deleted.",
->   "user": {
+>   "member": {
 >       "id": "__id__",
 >       "discord_id": "__discord_id__",
 >       "first_name": "__first_name__",
