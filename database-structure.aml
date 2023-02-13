@@ -47,9 +47,9 @@ transaction_categories | Represents the category of a transaction (as many categ
   id int pk
   name varchar(255) unique
 
-transaction_types
-  id int pk
-  name varchar(255) unique
+transaction_types | Represents the type of a transaction (debit or credit)
+  id int pk | 1: Debit, 2: Credit
+  name varchar(255) unique | Debit, Credit
 
 transactions | Represents a transaction between two accounts (source and target can be external accounts)
   code varchar(16) pk | Formatting : src + tgt + type + randCode
@@ -78,6 +78,20 @@ personal_transactions | Represents a transaction on a personal account (refill o
   sell_code varchar(255) nullable | ID of the sell, only if the transaction is a product purchase
   createdAt date | Indicate when the transaction has been created
 
+periodic_transaction
+  id int pk | ID of the periodic transaction
+  description text nullable | Description of the transaction
+  category_id int | ID of the category of the transaction
+  type_id int | ID of the type of the transaction
+  source int nullable | ID of the source account, null if external
+  target int nullable | ID of the target account, null if external
+  amount number | Amount of the transaction
+  start_date date | Indicate the date of the first transaction
+  next_date date | Indicate when the periodic transaction has to be done
+  period text | Frequency of the periodic transaction (daily, weekly, monthly, yearly)
+  createdAt date | Indicate when the periodic transaction has been created
+  updatedAt date | Indicate when the periodic transaction has been updated
+
 # FKs
 fk transactions.category_id -> transaction_categories.id
 fk transactions.type_id -> transaction_types.id
@@ -88,6 +102,10 @@ fk transactions.billing_id -> pictures.id
 fk personal_transactions.account_id -> personal_accounts.id
 fk personal_transactions.type_id -> transaction_types.id
 fk personal_transactions.sell_code -> sales.code
+fk periodic_transaction.category_id -> transaction_categories.id
+fk periodic_transaction.type_id -> transaction_types.id
+fk periodic_transaction.source -> accounting_accounts.id
+fk periodic_transaction.target -> accounting_accounts.id
 
 
 #=========# SALES #=========#
