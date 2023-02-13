@@ -8,7 +8,8 @@ module.exports = (orm: Sequelize) => {
             autoIncrement: true
         },
         username: {
-            type: DataTypes.STRING(255)
+            type: DataTypes.STRING(255),
+            unique: true
         },
         email: {
             type: DataTypes.STRING(255),
@@ -18,10 +19,12 @@ module.exports = (orm: Sequelize) => {
             }
         },
         password: {
-            type: DataTypes.TEXT
+            type: DataTypes.TEXT,
+            allowNull: true
         },
         validation_code: {
-            type: DataTypes.STRING(9)
+            type: DataTypes.STRING(9),
+            allowNull: true
         },
         group_id: {
             type: DataTypes.INTEGER

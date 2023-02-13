@@ -8,7 +8,8 @@ module.exports = (orm: Sequelize) => {
             autoIncrement: true
         },
         name: {
-            type: DataTypes.STRING(255)
+            type: DataTypes.STRING(255),
+            unique: true
         }
     }, {
         timestamps: true,
