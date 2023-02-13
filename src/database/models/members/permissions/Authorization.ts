@@ -14,7 +14,7 @@ module.exports = (orm: Sequelize) => {
             type: DataTypes.INTEGER
         }
     }, {
-        timestamps: true,
+        timestamps: false,
         createdAt: false,
         updatedAt: false,
         deletedAt: false

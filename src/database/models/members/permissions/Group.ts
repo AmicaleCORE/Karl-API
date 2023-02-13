@@ -16,7 +16,7 @@ module.exports = (orm: Sequelize) => {
             defaultValue: false
         }
     }, {
-        timestamps: true,
+        timestamps: false,
         createdAt: false,
         updatedAt: false,
         deletedAt: false

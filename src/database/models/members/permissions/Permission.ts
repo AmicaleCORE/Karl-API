@@ -12,7 +12,7 @@ module.exports = (orm: Sequelize) => {
             unique: true
         }
     }, {
-        timestamps: true,
+        timestamps: false,
         createdAt: false,
         updatedAt: false,
         deletedAt: false
