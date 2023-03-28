@@ -116,18 +116,13 @@ fk transactions.correction_id -> transaction_correction.id
 sales | Represents a sale of a pack of products
   code varchar(9) pk | Formatting: (c|s|p) + randCode
   author_id int | ID of the user who created the sale
-  type_id int | ID of the type of the sale
+  type_id int | ID of the type of the sale (1: Cash, 2: SumUp, 3: Personal account) [hardcoded enum]
   amount number | Amount of the sale
   process_date datetime nullable | Indicate when the sell has been processed, null if not processed
   created_at date | Indicate when the sell has been created
 
-sale_types | Represents the type of a sale
-  id int pk | 1: Cash, 2: SumUp, 3: Personal account
-  name varchar(255) unique | Cash, SumUp, Personal account
-
 # FKs
 fk sales.author_id -> users.id
-fk sales.type_id -> sale_types.id
 
 
 #=========# PRODUCTS #=========#
@@ -151,13 +146,9 @@ product_movements | Represents a movement of a product (refill, sale, stock corr
   operation_code varchar(9) | code of the operation (pointing of the refill, sale or stock correction code field)
   product_id int | ID of the product
   change int | Change applied to the product stock quantity (+/-)
-  movement_type int | Type of the movement (1: Refill, 2: Sale, 3: Stock correction)
+  movement_type int | Type of the movement (1: Refill, 2: Sale, 3: Stock correction) [hardcoded enum]
   process_date datetime nullable | Indicate when the movement has been processed, null if not processed
   created_at date | Indicate when the movement has been created
-
-movement_types | Represents the type of a movement
-  id int pk | 1: Refill, 2: Sale, 3: Stock correction
-  name varchar(255) unique | Refill, Sale, Stock correction
 
 # FKs
 fk products.category_id -> product_categories.id
@@ -166,7 +157,6 @@ fk product_movements.operation_code -> refill.code
 fk product_movements.operation_code -> sales.code
 fk product_movements.operation_code -> stock_corrections.code
 fk product_movements.product_id -> products.id
-fk product_movements.movement_type -> movement_types.id
 
 
 #=========# PERMISSIONS #=========#
@@ -213,13 +203,15 @@ pictures | Represents a picture
   id int pk | ID of the picture
   name varchar(255) unique | Name of the picture
   path text unique | Path of the picture
-  type varchar(255) | Type of the picture (billing, product, etc.)
+  type varchar(255) | Type of the picture (Billing or Product) [hardcoded enum]
   created_at date | Indicate when the picture has been created
   updated_at date | Indicate when the picture has been updated
 
-picture_types | Represents the type of a picture
-  id int pk | 1: Billing, 2: Product
-  name varchar(255) unique | Billing, Product
 
-# FKs
-fk pictures.type -> picture_types.id
+#=========# LOGS #=========#
+
+logs | Represents a operation log
+  reference varchar(15) pk | Reference of the log (can be a sale code, a transaction code, a product movement id, etc.)
+  type varchar(255) | Type of the log (sale, transaction, product movement, etc.) [hardcoded enum]
+  state varchar(255) | State of the log (created, processed, etc.) [hardcoded enum]
+  message text nullable | Message of the log if needed (error message for example)
