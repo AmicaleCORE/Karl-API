@@ -9,16 +9,16 @@ members | A user is created after the "/register" command on Discord
   first_name varchar(255) | The surname of the member
   last_name varchar(255) | The name of the member
   membership_date date nullable | Set when the member pays his membership
-  createdAt date | Indicate when the member has been created
-  updatedAt date | Indicate when the member has been updated
+  created_at date | Indicate when the member has been created
+  updated_at date | Indicate when the member has been updated
 
 personal_accounts | Represents the personal account of a member
   id int pk | ID of the account
   member_id int unique | Member owner of the account
   card_id text unique | ID of the student card's QR code
   amount number = 0.0 | Amount of money in the account
-  createdAt date | Indicate when the account has been created
-  updatedAt date | Indicate when the account has been updated
+  created_at date | Indicate when the account has been created
+  updated_at date | Indicate when the account has been updated
 
 # FKs
 fk personal_accounts.member_id -> members.id
@@ -33,7 +33,7 @@ users | Represents a user of the website
   password text nullable | Bcrypt hash of the password
   validation_code varchar(9) nullable | Code used to set the password for the first login
   group_id int | Group of permissions
-  createdAt date | Indicate when the user has been created
+  created_at date | Indicate when the user has been created
   updateAt date | Indicate when the user has been updated
 
 # FKs
@@ -56,14 +56,14 @@ transactions | Represents a transaction between two accounts (source and target 
   account_id int nullable | ID of the accounting account, null if external
   amount number | Amount of the transaction (+ or -)
   correction_id int nullable | ID of the correction if the transaction has been corrected
-  createdAt date
+  created_at date
 
 accounting_accounts | Represents an accounting account
   id int pk | ID of the account
   name varchar(255) unique | Name of the account
   amount number = 0.0 | Amount of money in the account
-  createdAt date | Indicate when the account has been created
-  updatedAt date | Indicate when the account has been updated
+  created_at date | Indicate when the account has been created
+  updated_at date | Indicate when the account has been updated
 
 personal_transactions | Represents a transaction on a personal account (refill or product purchase)
   code varchar(15) pk | Formatting: accountId + type + randCode
@@ -71,7 +71,7 @@ personal_transactions | Represents a transaction on a personal account (refill o
   amount number | Amount of the transaction
   flow varchar(255) | Flow of the transaction (debit or credit)
   sale_code varchar(9) nullable | ID of the sell, only if the transaction is a product purchase
-  createdAt date | Indicate when the transaction has been created
+  created_at date | Indicate when the transaction has been created
 
 periodic_transaction
   id int pk | ID of the periodic transaction
@@ -83,8 +83,8 @@ periodic_transaction
   start_date date | Indicate the date of the first transaction
   next_date date | Indicate when the periodic transaction has to be done
   period varchar(255) | Frequency of the periodic transaction (daily, weekly, monthly, yearly)
-  createdAt date | Indicate when the periodic transaction has been created
-  updatedAt date | Indicate when the periodic transaction has been updated
+  created_at date | Indicate when the periodic transaction has been created
+  updated_at date | Indicate when the periodic transaction has been updated
 
 transaction_correction | Represents a correction of a transaction
   id int pk | ID of the correction
@@ -119,7 +119,7 @@ sales | Represents a sale of a pack of products
   type_id int | ID of the type of the sale
   amount number | Amount of the sale
   process_date datetime nullable | Indicate when the sell has been processed, null if not processed
-  createdAt date | Indicate when the sell has been created
+  created_at date | Indicate when the sell has been created
 
 sale_types | Represents the type of a sale
   id int pk | 1: Cash, 2: SumUp, 3: Personal account
@@ -144,7 +144,7 @@ products | Represents a product
   picture_id int nullable | ID of the picture of the product
   stock_amount int = 0 | Amount of product in stock
   alert_amount int = 0 | Amount of product under which an alert is sent
-  createdAt date | Indicate when the product has been created
+  created_at date | Indicate when the product has been created
 
 product_movements | Represents a movement of a product (refill, sale, stock correction)
   id int pk | ID of the movement
@@ -153,7 +153,7 @@ product_movements | Represents a movement of a product (refill, sale, stock corr
   change int | Change applied to the product stock quantity (+/-)
   movement_type int | Type of the movement (1: Refill, 2: Sale, 3: Stock correction)
   process_date datetime nullable | Indicate when the movement has been processed, null if not processed
-  createdAt date | Indicate when the movement has been created
+  created_at date | Indicate when the movement has been created
 
 movement_types | Represents the type of a movement
   id int pk | 1: Refill, 2: Sale, 3: Stock correction
@@ -195,12 +195,12 @@ fk authorizations.permission_id -> permissions.id
 refill | Represents a refill of the stock
   code varchar(9) pk | Formatting: "r" + randCode
   transaction_code varchar(15) unique | ID of the transaction
-  createdAt date | Indicate when the refill has been created
+  created_at date | Indicate when the refill has been created
 
 stock_corrections | Represents a correction of the stock
   code varchar(9) pk | Formatting: "c" + randCode
   author_id int | ID of the user who created the correction
-  createdAt date | Indicate when the correction has been created
+  created_at date | Indicate when the correction has been created
 
 # FKs
 fk refill.transaction_code -> transactions.code
@@ -214,8 +214,8 @@ pictures | Represents a picture
   name varchar(255) unique | Name of the picture
   path text unique | Path of the picture
   type varchar(255) | Type of the picture (billing, product, etc.)
-  createdAt date | Indicate when the picture has been created
-  updatedAt date | Indicate when the picture has been updated
+  created_at date | Indicate when the picture has been created
+  updated_at date | Indicate when the picture has been updated
 
 picture_types | Represents the type of a picture
   id int pk | 1: Billing, 2: Product
