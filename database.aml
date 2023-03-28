@@ -77,7 +77,6 @@ periodic_transaction
   id int pk | ID of the periodic transaction
   description text nullable | Description of the transaction
   category_id int | ID of the category of the transaction
-  flow varchar(255) | Flow of the transaction (debit or credit)
   source int nullable | ID of the source account, null if external
   target int nullable | ID of the target account, null if external
   amount number | Amount of the transaction
