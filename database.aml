@@ -121,6 +121,7 @@ sales | Represents a sale of a pack of products
   code varchar(9) pk | Formatting: (c|s|p) + randCode
   author_id int | ID of the user who created the sale
   type_id int | ID of the type of the sale
+  amount number | Amount of the sale
   process_date datetime nullable | Indicate when the sell has been processed, null if not processed
   createdAt date | Indicate when the sell has been created
 
