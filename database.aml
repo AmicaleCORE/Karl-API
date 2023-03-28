@@ -51,12 +51,10 @@ transactions | Represents a transaction between two accounts (source and target 
   code varchar(15) pk | Formatting : src + tgt + type + randCode
   description text nullable
   billing_id int nullable unique | ID of the billing if the transaction is linked to one (for future billing scanning)
-  user_id varchar(255) nullable | ID of the user who created the transaction, null if done by the system
+  author_id varchar(255) nullable | ID of the user who created the transaction, null if done by the system
   category_id int | ID of the category of the transaction
-  flow varchar(255) | Flow of the transaction (debit or credit)
-  source int nullable | ID of the source account, null if external
-  target int nullable | ID of the target account, null if external
-  amount number | Amount of the transaction
+  account_id int nullable | ID of the accounting account, null if external
+  amount number | Amount of the transaction (+ or -)
   correction_id int nullable | ID of the correction if the transaction has been corrected
   createdAt date
 
@@ -101,9 +99,8 @@ correction_types | Represents the type of a correction (cashier error for exampl
 
 # FKs
 fk transactions.category_id -> transaction_categories.id
-fk transactions.source -> accounting_accounts.id
-fk transactions.target -> accounting_accounts.id
-fk transactions.user_id -> users.id
+fk transactions.account_id -> accounting_accounts.id
+fk transactions.author_id -> users.id
 fk transactions.billing_id -> pictures.id
 fk personal_transactions.account_id -> personal_accounts.id
 fk personal_transactions.sale_code -> sales.code
