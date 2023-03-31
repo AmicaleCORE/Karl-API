@@ -6,6 +6,7 @@
 members | A user is created after the "/register" command on Discord
   id int pk | ID of the member
   discord_id int unique | ID of the member on Discord
+  link_code varchar(9) nullable | Code used to link the member to his Discord account
   first_name varchar(255) | The surname of the member
   last_name varchar(255) | The name of the member
   membership_date date nullable | Set when the member pays his membership
@@ -33,12 +34,18 @@ users | Represents a user of the website
   password text nullable | Bcrypt hash of the password
   validation_code varchar(9) nullable | Code used to set the password for the first login
   group_id int | Group of permissions
+  organization_id int nullable | ID of the association if the user is an association admin
   created_at date | Indicate when the user has been created
   updateAt date | Indicate when the user has been updated
 
+organization | Represents an association
+  id int pk | ID of the association
+  name varchar(255) unique | Name of the association
+  description text nullable | Description of the association
+
 # FKs
-fk users.id -> members.id
 fk users.group_id -> groups.id
+fk users.organization_id -> organization.id
 
 
 #=========# TRANSACTIONS #=========#
