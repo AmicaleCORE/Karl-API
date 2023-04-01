@@ -1,5 +1,33 @@
 # This file can be load on the website https://azimutt.app
 
+#=========# USERS #=========#
+
+users | Represents a user of the website
+  id int pk | ID of the user
+  username varchar(255) unique | Formatting: surname.name
+  email varchar(255) unique | Formatting: surname.name@amicalecore.org
+  password text nullable | Bcrypt hash of the password
+  validation_code varchar(9) nullable | Code used to set the password for the first login
+  group_id int | Group of permissions
+  specific_permissions text nullable | Specific permissions for the user
+  organization_id int nullable | ID of the association if the user is an association admin
+  created_at date | Indicate when the user has been created
+  updateAt date | Indicate when the user has been updated
+
+organization | Represents an association
+  id int pk | ID of the association
+  name varchar(255) unique | Name of the association
+  description text nullable | Description of the association
+
+groups | Represents a group
+  id int pk | ID of the group
+  name varchar(255) unique | Name of the group
+  permissions text | Permissions of the group (serialized array)
+
+# FKs
+fk users.group_id -> groups.id
+fk users.organization_id -> organization.id
+
 
 #=========# MEMBERS #=========#
 
@@ -23,114 +51,6 @@ personal_accounts | Represents the personal account of a member
 
 # FKs
 fk personal_accounts.member_id -> members.id
-
-
-#=========# USERS #=========#
-
-users | Represents a user of the website
-  id int pk | ID of the user
-  username varchar(255) unique | Formatting: surname.name
-  email varchar(255) unique | Formatting: surname.name@amicalecore.org
-  password text nullable | Bcrypt hash of the password
-  validation_code varchar(9) nullable | Code used to set the password for the first login
-  group_id int | Group of permissions
-  specific_permissions text nullable | Specific permissions for the user
-  organization_id int nullable | ID of the association if the user is an association admin
-  created_at date | Indicate when the user has been created
-  updateAt date | Indicate when the user has been updated
-
-organization | Represents an association
-  id int pk | ID of the association
-  name varchar(255) unique | Name of the association
-  description text nullable | Description of the association
-
-# FKs
-fk users.group_id -> groups.id
-fk users.organization_id -> organization.id
-
-
-#=========# TRANSACTIONS #=========#
-
-transaction_categories | Represents the category of a transaction (as many categories as needed)
-  id int pk
-  name varchar(255) unique
-
-transactions | Represents a transaction between two accounts (source and target can be external accounts)
-  code varchar(15) pk | Formatting : src + tgt + type + randCode
-  description text nullable
-  billing_id int nullable unique | ID of the billing if the transaction is linked to one (for future billing scanning)
-  author_id varchar(255) nullable | ID of the user who created the transaction, null if done by the system
-  category_id int | ID of the category of the transaction
-  account_id int nullable | ID of the accounting account, null if external
-  amount number | Amount of the transaction (+ or -)
-  correction_id int nullable | ID of the correction if the transaction has been corrected
-  created_at date
-
-accounting_accounts | Represents an accounting account
-  id int pk | ID of the account
-  name varchar(255) unique | Name of the account
-  amount number = 0.0 | Amount of money in the account
-  created_at date | Indicate when the account has been created
-  updated_at date | Indicate when the account has been updated
-
-personal_transactions | Represents a transaction on a personal account (refill or product purchase)
-  code varchar(15) pk | Formatting: accountId + type + randCode
-  account_id int | ID of the personal account (the member id)
-  amount number | Amount of the transaction
-  flow varchar(255) | Flow of the transaction (debit or credit)
-  sale_code varchar(9) nullable | ID of the sell, only if the transaction is a product purchase
-  created_at date | Indicate when the transaction has been created
-
-periodic_transaction
-  id int pk | ID of the periodic transaction
-  description text nullable | Description of the transaction
-  category_id int | ID of the category of the transaction
-  source int nullable | ID of the source account, null if external
-  target int nullable | ID of the target account, null if external
-  amount number | Amount of the transaction
-  start_date date | Indicate the date of the first transaction
-  next_date date | Indicate when the periodic transaction has to be done
-  period varchar(255) | Frequency of the periodic transaction (daily, weekly, monthly, yearly)
-  created_at date | Indicate when the periodic transaction has been created
-  updated_at date | Indicate when the periodic transaction has been updated
-
-transaction_correction | Represents a correction of a transaction
-  id int pk | ID of the correction
-  type_id int | ID of the type of the correction
-  reason text | Reason of the correction
-  transaction_code varchar(15) | Code of the transaction to correct
-
-correction_types | Represents the type of a correction (cashier error for example)
-  id int pk | ID of the correction type
-  name varchar(255) unique | Name of the correction type
-
-# FKs
-fk transactions.category_id -> transaction_categories.id
-fk transactions.account_id -> accounting_accounts.id
-fk transactions.author_id -> users.id
-fk transactions.billing_id -> pictures.id
-fk personal_transactions.account_id -> personal_accounts.id
-fk personal_transactions.sale_code -> sales.code
-fk periodic_transaction.category_id -> transaction_categories.id
-fk periodic_transaction.source -> accounting_accounts.id
-fk periodic_transaction.target -> accounting_accounts.id
-fk transaction_correction.type_id -> correction_types.id
-fk transaction_correction.transaction_code -> transactions.code
-fk transactions.correction_id -> transaction_correction.id
-
-
-#=========# SALES #=========#
-
-sales | Represents a sale of a pack of products
-  code varchar(9) pk | Formatting: (c|s|p) + randCode
-  author_id int | ID of the user who created the sale
-  type_id int | ID of the type of the sale (1: Cash, 2: SumUp, 3: Personal account) [hardcoded enum]
-  amount number | Amount of the sale
-  process_date datetime nullable | Indicate when the sell has been processed, null if not processed
-  created_at date | Indicate when the sell has been created
-
-# FKs
-fk sales.author_id -> users.id
 
 
 #=========# PRODUCTS #=========#
@@ -158,24 +78,13 @@ product_movements | Represents a movement of a product (refill, sale, stock corr
   process_date datetime nullable | Indicate when the movement has been processed, null if not processed
   created_at date | Indicate when the movement has been created
 
-# FKs
-fk products.category_id -> product_categories.id
-fk products.picture_id -> pictures.id
-fk product_movements.operation_code -> refill.code
-fk product_movements.operation_code -> sales.code
-fk product_movements.operation_code -> stock_corrections.code
-fk product_movements.product_id -> products.id
-
-
-#=========# PERMISSIONS #=========#
-
-groups | Represents a group
-  id int pk | ID of the group
-  name varchar(255) unique | Name of the group
-  permissions text | Permissions of the group (serialized array)
-
-
-#=========# STOCKS #=========#
+sales | Represents a sale of a pack of products
+  code varchar(9) pk | Formatting: (c|s|p) + randCode
+  author_id int | ID of the user who created the sale
+  type_id int | ID of the type of the sale (1: Cash, 2: SumUp, 3: Personal account) [hardcoded enum]
+  amount number | Amount of the sale
+  process_date datetime nullable | Indicate when the sell has been processed, null if not processed
+  created_at date | Indicate when the sell has been created
 
 refill | Represents a refill of the stock
   code varchar(9) pk | Formatting: "r" + randCode
@@ -188,8 +97,85 @@ stock_corrections | Represents a correction of the stock
   created_at date | Indicate when the correction has been created
 
 # FKs
+fk sales.author_id -> users.id
+fk products.category_id -> product_categories.id
+fk products.picture_id -> pictures.id
+fk product_movements.operation_code -> refill.code
+fk product_movements.operation_code -> sales.code
+fk product_movements.operation_code -> stock_corrections.code
+fk product_movements.product_id -> products.id
 fk refill.transaction_code -> transactions.code
 fk stock_corrections.author_id -> users.id
+
+
+#=========# TRANSACTIONS #=========#
+
+accounting_accounts | Represents an accounting account
+  id int pk | ID of the account
+  name varchar(255) unique | Name of the account
+  amount number = 0.0 | Amount of money in the account
+  created_at date | Indicate when the account has been created
+  updated_at date | Indicate when the account has been updated
+
+transactions | Represents a transaction between two accounts (source and target can be external accounts)
+  code varchar(15) pk | Formatting : src + tgt + type + randCode
+  description text nullable
+  billing_id int nullable unique | ID of the billing if the transaction is linked to one (for future billing scanning)
+  author_id varchar(255) nullable | ID of the user who created the transaction, null if done by the system
+  category_id int | ID of the category of the transaction
+  account_id int nullable | ID of the accounting account, null if external
+  amount number | Amount of the transaction (+ or -)
+  correction_id int nullable | ID of the correction if the transaction has been corrected
+  created_at date
+
+transaction_categories | Represents the category of a transaction (as many categories as needed)
+  id int pk
+  name varchar(255) unique
+
+periodic_transaction
+  id int pk | ID of the periodic transaction
+  description text nullable | Description of the transaction
+  category_id int | ID of the category of the transaction
+  source int nullable | ID of the source account, null if external
+  target int nullable | ID of the target account, null if external
+  amount number | Amount of the transaction
+  start_date date | Indicate the date of the first transaction
+  next_date date | Indicate when the periodic transaction has to be done
+  period varchar(255) | Frequency of the periodic transaction (daily, weekly, monthly, yearly)
+  created_at date | Indicate when the periodic transaction has been created
+  updated_at date | Indicate when the periodic transaction has been updated
+
+transaction_correction | Represents a correction of a transaction
+  id int pk | ID of the correction
+  type_id int | ID of the type of the correction
+  reason text | Reason of the correction
+  transaction_code varchar(15) | Code of the transaction to correct
+
+correction_types | Represents the type of a correction (cashier error for example)
+  id int pk | ID of the correction type
+  name varchar(255) unique | Name of the correction type
+
+personal_transactions | Represents a transaction on a personal account (refill or product purchase)
+  code varchar(15) pk | Formatting: accountId + type + randCode
+  account_id int | ID of the personal account (the member id)
+  amount number | Amount of the transaction
+  flow varchar(255) | Flow of the transaction (debit or credit)
+  sale_code varchar(9) nullable | ID of the sell, only if the transaction is a product purchase
+  created_at date | Indicate when the transaction has been created
+
+# FKs
+fk transactions.category_id -> transaction_categories.id
+fk transactions.account_id -> accounting_accounts.id
+fk transactions.author_id -> users.id
+fk transactions.billing_id -> pictures.id
+fk personal_transactions.account_id -> personal_accounts.id
+fk personal_transactions.sale_code -> sales.code
+fk periodic_transaction.category_id -> transaction_categories.id
+fk periodic_transaction.source -> accounting_accounts.id
+fk periodic_transaction.target -> accounting_accounts.id
+fk transaction_correction.type_id -> correction_types.id
+fk transaction_correction.transaction_code -> transactions.code
+fk transactions.correction_id -> transaction_correction.id
 
 
 #=========# PICTURES #=========#
