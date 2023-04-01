@@ -34,6 +34,7 @@ users | Represents a user of the website
   password text nullable | Bcrypt hash of the password
   validation_code varchar(9) nullable | Code used to set the password for the first login
   group_id int | Group of permissions
+  specific_permissions text nullable | Specific permissions for the user
   organization_id int nullable | ID of the association if the user is an association admin
   created_at date | Indicate when the user has been created
   updateAt date | Indicate when the user has been updated
@@ -168,23 +169,10 @@ fk product_movements.product_id -> products.id
 
 #=========# PERMISSIONS #=========#
 
-permissions | Represents a permission
-  id int pk | ID of the permission
-  name varchar(255) unique | Name of the permission
-
 groups | Represents a group
   id int pk | ID of the group
   name varchar(255) unique | Name of the group
-  default boolean = false | Indicate if the group is the default group
-
-authorizations | Represents the association between a group and a permission
-  id int pk | ID of the association
-  group_id int | ID of the group
-  permission_id int | ID of the permission
-
-# FKs
-fk authorizations.group_id -> groups.id
-fk authorizations.permission_id -> permissions.id
+  permissions text | Permissions of the group (serialized array)
 
 
 #=========# STOCKS #=========#
