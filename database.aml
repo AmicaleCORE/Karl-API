@@ -65,15 +65,19 @@ products | Represents a product
   unit_price number | Price of one unit of the product
   category_id int | ID of the category of the product
   picture_id int nullable | ID of the picture of the product
-  stock_amount int = 0 | Amount of product in stock
   alert_amount int = 0 | Amount of product under which an alert is sent
   created_at date | Indicate when the product has been created
+
+inventory | Represents the stock of a product
+  product_id int pk | ID of the product
+  amount int = 0 | Amount of product in stock
+  created_at date | Indicate when the stock has been created
 
 product_movements | Represents a movement of a product (refill, sale, stock correction)
   id int pk | ID of the movement
   operation_code varchar(9) | code of the operation (pointing of the refill, sale or stock correction code field)
   product_id int | ID of the product
-  change int | Change applied to the product stock quantity (+/-)
+  amount int | Amount of product (+ or -)
   movement_type int | Type of the movement (1: Refill, 2: Sale, 3: Stock correction) [hardcoded enum]
   process_date datetime nullable | Indicate when the movement has been processed, null if not processed
   created_at date | Indicate when the movement has been created
@@ -91,21 +95,28 @@ refill | Represents a refill of the stock
   transaction_code varchar(15) unique | ID of the transaction
   created_at date | Indicate when the refill has been created
 
-stock_corrections | Represents a correction of the stock
+inventory_corrections | Represents a correction of the stock
   code varchar(9) pk | Formatting: "c" + randCode
   author_id int | ID of the user who created the correction
   created_at date | Indicate when the correction has been created
+
+shrinkage | Represents a shrinkage of the stock (only affected by inventory corrections)
+  product_movement_id int pk | ID of the product movement
+  amount int | Amount of product shrinked
+  created_at date | Indicate when the shrinkage has been created
 
 # FKs
 fk sales.author_id -> users.id
 fk products.category_id -> product_categories.id
 fk products.picture_id -> pictures.id
+fk inventory.product_id -> products.id
 fk product_movements.operation_code -> refill.code
 fk product_movements.operation_code -> sales.code
-fk product_movements.operation_code -> stock_corrections.code
+fk product_movements.operation_code -> inventory_corrections.code
 fk product_movements.product_id -> products.id
 fk refill.transaction_code -> transactions.code
-fk stock_corrections.author_id -> users.id
+fk inventory_corrections.author_id -> users.id
+fk shrinkage.product_movement_id -> product_movements.id
 
 
 #=========# TRANSACTIONS #=========#
