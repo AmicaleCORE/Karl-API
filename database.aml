@@ -188,6 +188,17 @@ pictures | Represents a picture
   created_at date | Indicate when the picture has been created
   updated_at date | Indicate when the picture has been updated
 
+#=========# DONATIONS #=========#
+
+donations | Represents a donation
+  id int pk | ID of the donation
+  transaction_code varchar(15) unique | ID of the transaction
+  member_id int nullable | ID of the member who made the donation
+  created_at date | Indicate when the donation has been created
+
+# FKs
+fk donations.transaction_code -> transactions.code
+fk donations.member_id -> members.id
 
 #=========# LOGS #=========#
 
