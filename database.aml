@@ -87,7 +87,9 @@ sales | Represents a sale of a pack of products
   author_id int | ID of the user who created the sale
   type_id int | ID of the type of the sale (1: Cash, 2: SumUp, 3: Personal account) [hardcoded enum]
   amount number | Amount of the sale
+  discount_code varchar(9) nullable | Code of the discount used
   process_date datetime nullable | Indicate when the sell has been processed, null if not processed
+  cancel_date datetime nullable | Indicate when the sell has been canceled, null if not canceled (can only be cancel by user who created the sell, if the sell has not been processed, and in a delay of 5 minutes)
   created_at date | Indicate when the sell has been created
 
 refill | Represents a refill of the stock
@@ -105,6 +107,12 @@ shrinkage | Represents a shrinkage of the stock (only affected by inventory corr
   amount int | Amount of product shrinked
   created_at date | Indicate when the shrinkage has been created
 
+discount_codes | Represents a discount code
+  code varchar(9) pk | Formatting: "d" + randCode
+  amount number | Amount of the discount
+  is_percentage boolean | Indicate if the discount is a percentage
+  created_at date | Indicate when the discount code has been created
+
 # FKs
 fk sales.author_id -> users.id
 fk products.category_id -> product_categories.id
@@ -117,6 +125,7 @@ fk product_movements.product_id -> products.id
 fk refill.transaction_code -> transactions.code
 fk inventory_corrections.author_id -> users.id
 fk shrinkage.product_movement_id -> product_movements.id
+fk discount_codes.code -> sales.discount_code
 
 
 #=========# TRANSACTIONS #=========#
