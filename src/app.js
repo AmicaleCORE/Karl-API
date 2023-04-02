@@ -8,12 +8,14 @@ const app = express();
 
 // Importing middlewares
 const cors = require("cors");
+const helmet = require("helmet");
 const rateLimit = require("express-rate-limit");
 
 // Init middlewares
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(cors());
+app.use(helmet());
 app.use(rateLimit({
     windowMs: 15 * 60 * 1000,
     max: 1000,
