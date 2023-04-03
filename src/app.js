@@ -27,9 +27,7 @@ app.use(rateLimit({
 // require("./handlers/RoutesHandler")(app);
 
 // Default route
-app.get("/", (req, res) => {
-    res.status(404).json({error: "Not found"});
-});
+app.use(({res}) => res.status(404).json({message: "Route not found"}));
 
 // Start server
 if(process.env.SSL.toLowerCase() === "false"){
