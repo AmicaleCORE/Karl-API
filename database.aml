@@ -69,10 +69,11 @@ inventory | Represents the stock of a product
 
 product_movements | Represents a movement of a product (refill, sale, stock correction)
   id int pk | ID of the movement
+  movement_type int | Type of the movement (1: Refill, 2: Sale, 3: Stock correction) [hardcoded enum]
   operation_code varchar(9) | code of the operation (pointing of the refill, sale or stock correction code field)
   product_id int | ID of the product
-  amount int | Amount of product (+ or -)
-  movement_type int | Type of the movement (1: Refill, 2: Sale, 3: Stock correction) [hardcoded enum]
+  credit int = 0 | Amount of product added to the stock
+  debit int = 0 | Amount of product removed from the stock
   process_date datetime nullable | Indicate when the movement has been processed, null if not processed
   created_at date | Indicate when the movement has been created
 
@@ -141,7 +142,8 @@ transactions | Represents a transaction between two accounts (source and target 
   author_id varchar(255) nullable | ID of the user who created the transaction, null if done by the system
   category_id int | ID of the category of the transaction
   account_id int nullable | ID of the financial account, null if external
-  amount number | Amount of the transaction (+ or -)
+  credit number nullable | Amount of the credit if the transaction is a credit
+  debit number nullable | Amount of the debit if the transaction is a debit
   correction_id int nullable | ID of the correction if the transaction has been corrected
   created_at date
 
@@ -175,8 +177,8 @@ correction_types | Represents the type of a correction (cashier error for exampl
 personal_transactions | Represents a transaction on a personal account (refill or product purchase)
   code varchar(15) pk | Formatting: accountId + type + randCode
   account_id int | ID of the personal account (the member id)
-  amount number | Amount of the transaction
-  flow varchar(255) | Flow of the transaction (debit or credit)
+  credit number nullable | Amount of the credit if the transaction is a credit
+  debit number nullable | Amount of the debit if the transaction is a debit
   sale_code varchar(9) nullable | ID of the sell, only if the transaction is a product purchase
   created_at date | Indicate when the transaction has been created
 
