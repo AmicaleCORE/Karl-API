@@ -111,6 +111,8 @@ discount_codes | Represents a discount code
   code varchar(9) pk | Formatting: "d" + randCode
   amount number | Amount of the discount
   is_percentage boolean | Indicate if the discount is a percentage
+  validity_start datetime | Indicate when the discount code is valid
+  validity_end datetime nullable | Indicate when the discount code is not valid anymore, null if no end date
   created_at date | Indicate when the discount code has been created
 
 # FKs
