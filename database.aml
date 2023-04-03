@@ -17,6 +17,8 @@ groups | Represents a group
   id int pk | ID of the group
   name varchar(255) unique | Name of the group
   permissions text | Permissions of the group (serialized array)
+  created_at date | Indicate when the group has been created
+  updated_at date | Indicate when the group has been updated
 
 # FKs
 fk users.group_id -> groups.id
@@ -70,11 +72,13 @@ products | Represents a product
   picture_id int nullable | ID of the picture of the product
   alert_amount int = 0 | Amount of product under which an alert is sent
   created_at date | Indicate when the product has been created
+  updated_at date | Indicate when the product has been updated
 
 inventory | Represents the stock of a product
   product_id int pk | ID of the product
   amount int = 0 | Amount of product in stock
   created_at date | Indicate when the stock has been created
+  updated_at date | Indicate when the stock has been updated
 
 product_movements | Represents a movement of a product (refill, sale, stock correction)
   id int pk | ID of the movement
@@ -95,21 +99,25 @@ sales | Represents a sale of a pack of products
   process_date datetime nullable | Indicate when the sell has been processed, null if not processed
   cancel_date datetime nullable | Indicate when the sell has been canceled, null if not canceled (can only be cancel by user who created the sell, if the sell has not been processed, and in a delay of 5 minutes)
   created_at date | Indicate when the sell has been created
+  updated_at date | Indicate when the sell has been updated
 
 refill | Represents a refill of the stock
   code varchar(9) pk | Formatting: "r" + randCode
   transaction_code varchar(15) unique | ID of the transaction
   created_at date | Indicate when the refill has been created
 
-inventory_corrections | Represents a correction of the stock
+inventory_counts | Represents a correction of the stock
   code varchar(9) pk | Formatting: "c" + randCode
   author_id int | ID of the user who created the correction
+  is_error boolean | Indicate if the correction is an error (if false, the correction add a shrinkage entry)
+  reason varchar(255) nullable | Reason of the correction (null if is_error is false)
   created_at date | Indicate when the correction has been created
 
 shrinkage | Represents a shrinkage of the stock (only affected by inventory corrections)
   product_movement_id int pk | ID of the product movement
   transaction_code varchar(15) nullable | Code of the transaction if the shrinkage is link to an account error
   created_at date | Indicate when the shrinkage has been created
+  updated_at date | Indicate when the shrinkage has been updated
 
 discount_codes | Represents a discount code
   code varchar(9) pk | Formatting: "d" + randCode
@@ -126,10 +134,10 @@ fk products.picture_id -> pictures.id
 fk inventory.product_id -> products.id
 fk product_movements.operation_code -> refill.code
 fk product_movements.operation_code -> sales.code
-fk product_movements.operation_code -> inventory_corrections.code
+fk product_movements.operation_code -> inventory_counts.code
 fk product_movements.product_id -> products.id
 fk refill.transaction_code -> transactions.code
-fk inventory_corrections.author_id -> users.id
+fk inventory_counts.author_id -> users.id
 fk shrinkage.product_movement_id -> product_movements.id
 fk discount_codes.code -> sales.discount_code
 
@@ -178,6 +186,7 @@ transaction_correction | Represents a correction of a transaction
   type_id int | ID of the type of the correction
   reason text | Reason of the correction
   transaction_code varchar(15) | Code of the transaction to correct
+  created_at date | Indicate when the correction has been created
 
 correction_types | Represents the type of a correction (cashier error for example)
   id int pk | ID of the correction type
@@ -235,3 +244,5 @@ logs | Represents a operation log
   type varchar(255) | Type of the log (sale, transaction, product movement, etc.) [hardcoded enum]
   state varchar(255) | State of the log (created, processed, etc.) [hardcoded enum]
   message text nullable | Message of the log if needed (error message for example)
+  created_at date | Indicate when the log has been created
+  updated_at date | Indicate when the log has been updated
