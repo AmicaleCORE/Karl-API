@@ -126,10 +126,11 @@ fk discount_codes.code -> sales.discount_code
 
 #=========# TRANSACTIONS #=========#
 
-accounting_accounts | Represents an accounting account
+financial_accounts | Represents an financial account
   id int pk | ID of the account
   name varchar(255) unique | Name of the account
   amount number = 0.0 | Amount of money in the account
+  account_category int | Number of the account category (only category 5)
   created_at date | Indicate when the account has been created
   updated_at date | Indicate when the account has been updated
 
@@ -139,7 +140,7 @@ transactions | Represents a transaction between two accounts (source and target 
   billing_id int nullable unique | ID of the billing if the transaction is linked to one (for future billing scanning)
   author_id varchar(255) nullable | ID of the user who created the transaction, null if done by the system
   category_id int | ID of the category of the transaction
-  account_id int nullable | ID of the accounting account, null if external
+  account_id int nullable | ID of the financial account, null if external
   amount number | Amount of the transaction (+ or -)
   correction_id int nullable | ID of the correction if the transaction has been corrected
   created_at date
@@ -181,14 +182,14 @@ personal_transactions | Represents a transaction on a personal account (refill o
 
 # FKs
 fk transactions.category_id -> transaction_categories.id
-fk transactions.account_id -> accounting_accounts.id
+fk transactions.account_id -> financial_accounts.id
 fk transactions.author_id -> users.id
 fk transactions.billing_id -> pictures.id
 fk personal_transactions.account_id -> personal_accounts.id
 fk personal_transactions.sale_code -> sales.code
 fk periodic_transaction.category_id -> transaction_categories.id
-fk periodic_transaction.source -> accounting_accounts.id
-fk periodic_transaction.target -> accounting_accounts.id
+fk periodic_transaction.source -> financial_accounts.id
+fk periodic_transaction.target -> financial_accounts.id
 fk transaction_correction.type_id -> correction_types.id
 fk transaction_correction.transaction_code -> transactions.code
 fk transactions.correction_id -> transaction_correction.id
