@@ -32,7 +32,7 @@ app.get("/", (req, res) => {
 });
 
 // Start server
-if(process.env.SSL.toUpperCase() === "FALSE"){
+if(process.env.SSL.toLowerCase() === "false"){
     app.listen(parseInt(process.env.PORT), process.env.BIND_ADDRESS, () => {
         console.log(`Server started on http://${process.env.BIND_ADDRESS}:${process.env.PORT}`);
     });

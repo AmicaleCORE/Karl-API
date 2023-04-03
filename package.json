@@ -27,7 +27,8 @@
   "homepage": "https://github.com/AmicaleCORE/Karl-API#readme",
   "devDependencies": {
     "eslint": "^8.36.0",
-    "nodemon": "^2.0.22"
+    "nodemon": "^2.0.22",
+    "sqlite3": "^5.1.6"
   },
   "dependencies": {
     "cors": "^2.8.5",
