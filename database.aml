@@ -108,7 +108,7 @@ inventory_corrections | Represents a correction of the stock
 
 shrinkage | Represents a shrinkage of the stock (only affected by inventory corrections)
   product_movement_id int pk | ID of the product movement
-  amount int | Amount of product shrinked
+  transaction_code varchar(15) nullable | Code of the transaction if the shrinkage is link to an account error
   created_at date | Indicate when the shrinkage has been created
 
 discount_codes | Represents a discount code
