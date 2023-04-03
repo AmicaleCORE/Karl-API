@@ -139,6 +139,7 @@ fk product_movements.product_id -> products.id
 fk refill.transaction_code -> transactions.code
 fk inventory_counts.author_id -> users.id
 fk shrinkage.product_movement_id -> product_movements.id
+fk shrinkage.transaction_code -> transactions.code
 fk discount_codes.code -> sales.discount_code
 
 
