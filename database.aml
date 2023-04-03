@@ -24,14 +24,13 @@ fk users.group_id -> groups.id
 
 #=========# MEMBERS #=========#
 
-members | A user is created after the "/register" command on Discord
+persons | A user is created after the "/register" command on Discord
   id int pk | ID of the member
   discord_id int unique | ID of the member on Discord
   link_code varchar(9) nullable | Code used to link the member to his Discord account
   first_name varchar(255) | The surname of the member
   last_name varchar(255) | The name of the member
   email varchar(255) nullable | The email of the member
-  membership_date date nullable | Set when the member pays his membership
   created_at date | Indicate when the member has been created
   updated_at date | Indicate when the member has been updated
 
@@ -43,8 +42,18 @@ personal_accounts | Represents the personal account of a member
   created_at date | Indicate when the account has been created
   updated_at date | Indicate when the account has been updated
 
+memberships | Represents the membership of a member
+  id int pk | ID of the membership
+  person_id int | Member owner of the membership
+  membership_type varchar(255) | Type of the membership (member, honorary_member or teaching_staff)
+  transaction_code int nullable | Code of the transaction (null if membership type is not member)
+  is_active boolean = true | Indicate if the membership is active
+  created_at date | Indicate when the membership has been created
+
 # FKs
-fk personal_accounts.member_id -> members.id
+fk personal_accounts.member_id -> persons.id
+fk memberships.person_id -> persons.id
+fk memberships.transaction_code -> transactions.code
 
 
 #=========# PRODUCTS #=========#
@@ -217,7 +226,7 @@ donations | Represents a donation
 
 # FKs
 fk donations.transaction_code -> transactions.code
-fk donations.member_id -> members.id
+fk donations.member_id -> persons.id
 
 #=========# LOGS #=========#
 
