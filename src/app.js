@@ -29,16 +29,18 @@ app.use(rateLimit({
 // Default route
 app.use(({res}) => res.status(404).json({message: "Route not found"}));
 
+const log = (secure) => console.log(`Server started on ${secure ? 'https' : 'http'}://${process.env.BIND_ADDRESS}:${process.env.PORT}`)
+
 // Start server
 if(process.env.SSL.toLowerCase() === "false"){
     app.listen(parseInt(process.env.PORT), process.env.BIND_ADDRESS, () => {
-        console.log(`Server started on http://${process.env.BIND_ADDRESS}:${process.env.PORT}`);
+        log(false);
     });
 }else{
     https.createServer({
         key: fs.readFileSync(process.env.KEY_FILE),
         cert: fs.readFileSync(process.env.CERT_FILE)
     }, app).listen(parseInt(process.env.PORT), () => {
-        console.log(`Server started on https://${process.env.BIND_ADDRESS}:${process.env.PORT}`);
+        log(true);
     });
 }
