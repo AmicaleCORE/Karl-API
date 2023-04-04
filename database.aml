@@ -214,7 +214,7 @@ transaction_correction | Represents a correction of a transaction
 
 correction_types | Represents the type of a correction (cashier error for example)
   id int pk | ID of the correction type
-  name varchar(255) unique | Name of the correction type
+  name varchar(255) | Name of the correction type
   organization_id int nullable | ID of the organization, null if global
 
 personal_transactions | Represents a transaction on a personal account (refill or product purchase)
