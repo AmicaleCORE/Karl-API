@@ -10,18 +10,23 @@ users | Represents a user of the website
   validation_code varchar(9) nullable | Code used to set the password for the first login
   group_id int | Group of permissions
   specific_permissions text nullable | Specific permissions for the user
+  organization_id int nullable | ID of the organization of the user
+  preferences text nullable | Preferences of the user (serialized array)
   created_at date | Indicate when the user has been created
   updateAt date | Indicate when the user has been updated
 
 groups | Represents a group
   id int pk | ID of the group
-  name varchar(255) unique | Name of the group
+  name varchar(255) | Name of the group
   permissions text | Permissions of the group (serialized array)
+  organization_id int nullable | ID of the organization of the group, null if the group is global
   created_at date | Indicate when the group has been created
   updated_at date | Indicate when the group has been updated
 
 # FKs
 fk users.group_id -> groups.id
+fk users.organization_id -> organizations.id
+fk groups.organization_id -> organizations.id
 
 
 #=========# MEMBERS #=========#
@@ -33,6 +38,7 @@ persons | A user is created after the "/register" command on Discord
   first_name varchar(255) | The surname of the member
   last_name varchar(255) | The name of the member
   email varchar(255) nullable | The email of the member
+  organization_id int | ID of the organization of the member
   created_at date | Indicate when the member has been created
   updated_at date | Indicate when the member has been updated
 
@@ -53,6 +59,7 @@ memberships | Represents the membership of a member
   created_at date | Indicate when the membership has been created
 
 # FKs
+fk persons.organization_id -> organizations.id
 fk personal_accounts.member_id -> persons.id
 fk memberships.person_id -> persons.id
 fk memberships.transaction_code -> transactions.code
@@ -66,6 +73,7 @@ product_categories | Represents the category of a product
 
 products | Represents a product
   id int pk | ID of the product
+  organization_id int | ID of the organization of the product
   name varchar(255) unique | Name of the product
   unit_price number | Price of one unit of the product
   category_id int | ID of the category of the product
@@ -104,6 +112,7 @@ sales | Represents a sale of a pack of products
 refill | Represents a refill of the stock
   code varchar(9) pk | Formatting: "r" + randCode
   transaction_code varchar(15) unique | ID of the transaction
+  author_id int | ID of the user who created the refill
   created_at date | Indicate when the refill has been created
 
 inventory_counts | Represents a correction of the stock
@@ -125,10 +134,13 @@ discount_codes | Represents a discount code
   is_percentage boolean | Indicate if the discount is a percentage
   validity_start datetime | Indicate when the discount code is valid
   validity_end datetime nullable | Indicate when the discount code is not valid anymore, null if no end date
+  organization_id int | ID of the organization of the discount code
   created_at date | Indicate when the discount code has been created
 
 # FKs
 fk sales.author_id -> users.id
+fk refill.author_id -> users.id
+fk products.organization_id -> organizations.id
 fk products.category_id -> product_categories.id
 fk products.picture_id -> pictures.id
 fk inventory.product_id -> products.id
@@ -141,13 +153,15 @@ fk inventory_counts.author_id -> users.id
 fk shrinkage.product_movement_id -> product_movements.id
 fk shrinkage.transaction_code -> transactions.code
 fk discount_codes.code -> sales.discount_code
+fk discount_codes.organization_id -> organizations.id
 
 
 #=========# TRANSACTIONS #=========#
 
 financial_accounts | Represents an financial account
   id int pk | ID of the account
-  name varchar(255) unique | Name of the account
+  organization_id int | ID of the organization
+  name varchar(255) | Name of the account
   amount number = 0.0 | Amount of money in the account
   account_category int | Number of the account category (only category 5)
   created_at date | Indicate when the account has been created
@@ -171,6 +185,7 @@ transaction_categories | Represents the category of a transaction (as many categ
 
 periodic_transaction
   id int pk | ID of the periodic transaction
+  author_id int | ID of the user who created the periodic transaction
   description text nullable | Description of the transaction
   category_id int | ID of the category of the transaction
   source int nullable | ID of the source account, null if external
@@ -187,6 +202,7 @@ transaction_correction | Represents a correction of a transaction
   type_id int | ID of the type of the correction
   reason text | Reason of the correction
   transaction_code varchar(15) | Code of the transaction to correct
+  author_id int | ID of the user who created the correction
   created_at date | Indicate when the correction has been created
 
 correction_types | Represents the type of a correction (cashier error for example)
@@ -202,17 +218,20 @@ personal_transactions | Represents a transaction on a personal account (refill o
   created_at date | Indicate when the transaction has been created
 
 # FKs
+fk financial_accounts.organization_id -> organizations.id
 fk transactions.category_id -> transaction_categories.id
 fk transactions.account_id -> financial_accounts.id
 fk transactions.author_id -> users.id
 fk transactions.billing_id -> pictures.id
 fk personal_transactions.account_id -> personal_accounts.id
 fk personal_transactions.sale_code -> sales.code
+fk periodic_transaction.author_id -> users.id
 fk periodic_transaction.category_id -> transaction_categories.id
 fk periodic_transaction.source -> financial_accounts.id
 fk periodic_transaction.target -> financial_accounts.id
 fk transaction_correction.type_id -> correction_types.id
 fk transaction_correction.transaction_code -> transactions.code
+fk transaction_correction.author_id -> users.id
 fk transactions.correction_id -> transaction_correction.id
 
 
@@ -222,9 +241,13 @@ pictures | Represents a picture
   id int pk | ID of the picture
   name varchar(255) unique | Name of the picture
   path text unique | Path of the picture
-  type varchar(255) | Type of the picture (Billing or Product) [hardcoded enum]
+  type varchar(255) | Type of the picture (Billing, Product or Organization) [hardcoded enum]
+  organization_id int nullable | ID of the organization who own the picture
   created_at date | Indicate when the picture has been created
   updated_at date | Indicate when the picture has been updated
+
+# FKs
+fk pictures.organization_id -> organizations.id
 
 #=========# DONATIONS #=========#
 
@@ -232,11 +255,13 @@ donations | Represents a donation
   id int pk | ID of the donation
   transaction_code varchar(15) unique | ID of the transaction
   member_id int nullable | ID of the member who made the donation
+  author_id int | ID of the user who created the donation
   created_at date | Indicate when the donation has been created
 
 # FKs
 fk donations.transaction_code -> transactions.code
 fk donations.member_id -> persons.id
+fk donations.author_id -> users.id
 
 #=========# LOGS #=========#
 
@@ -245,5 +270,26 @@ logs | Represents a operation log
   type varchar(255) | Type of the log (sale, transaction, product movement, etc.) [hardcoded enum]
   state varchar(255) | State of the log (created, processed, etc.) [hardcoded enum]
   message text nullable | Message of the log if needed (error message for example)
+  organization_id int | ID of the organization who own the log
   created_at date | Indicate when the log has been created
   updated_at date | Indicate when the log has been updated
+
+# FKs
+fk logs.organization_id -> organizations.id
+
+
+#=========# ORGANIZATION #=========#
+
+organizations | Represents an organization
+  id int pk | ID of the organization
+  name varchar(255) unique | Name of the organization
+  address text | Address of the organization
+  phone_number varchar(255) | Phone number of the organization
+  email varchar(255) | Email of the organization
+  website varchar(255) | Website of the organization
+  logo_id int nullable | ID of the logo of the organization
+  created_at date | Indicate when the organization has been created
+  updated_at date | Indicate when the organization has been updated
+
+# FKs
+fk organizations.logo_id -> pictures.id
