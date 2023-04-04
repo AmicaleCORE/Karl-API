@@ -4,8 +4,8 @@
 
 users | Represents a user of the website
   id int pk | ID of the user
-  username varchar(255) unique | Formatting: surname.name
-  email varchar(255) unique | Formatting: surname.name@amicalecore.org
+  username varchar(255) | Formatting: surname.name
+  email varchar(255) unique | Email of the user
   password text nullable | Bcrypt hash of the password
   validation_code varchar(9) nullable | Code used to set the password for the first login
   group_id int | Group of permissions
@@ -70,13 +70,13 @@ fk memberships.transaction_code -> transactions.code
 
 product_categories | Represents the category of a product
   id int pk | ID of the category
-  name varchar(255) unique | Name of the category
+  name varchar(255) | Name of the category
   organization_id int | ID of the organization of the category
 
 products | Represents a product
   id int pk | ID of the product
   organization_id int | ID of the organization of the product
-  name varchar(255) unique | Name of the product
+  name varchar(255) | Name of the product
   unit_price number | Price of one unit of the product
   category_id int | ID of the category of the product
   picture_id int nullable | ID of the picture of the product
@@ -188,7 +188,7 @@ transactions | Represents a transaction between two accounts (source and target 
 
 transaction_categories | Represents the category of a transaction (as many categories as needed)
   id int pk | ID of the category
-  name varchar(255) unique | Name of the category
+  name varchar(255) | Name of the category
   organization_id int nullable | ID of the organization, null if global
 
 periodic_transaction
@@ -250,7 +250,7 @@ fk correction_types.organization_id -> organizations.id
 
 pictures | Represents a picture
   id int pk | ID of the picture
-  name varchar(255) unique | Name of the picture
+  name varchar(255) | Name of the picture. Formatting: type + id
   path text unique | Path of the picture
   type varchar(255) | Type of the picture (Billing, Product or Organization) [hardcoded enum]
   organization_id int nullable | ID of the organization who own the picture
@@ -297,9 +297,17 @@ organizations | Represents an organization
   address text | Address of the organization
   phone_number varchar(255) | Phone number of the organization
   logo_id int nullable | ID of the logo of the organization
-  license_key varchar(255) unique | License key of the organization
+  license_id int | ID of the license of the organization
   created_at date | Indicate when the organization has been created
   updated_at date | Indicate when the organization has been updated
 
+licenses | Represents a license
+  id int pk | ID of the license
+  key varchar(255) unique | License key
+  mail varchar(255) | Mail link to the license
+  created_at date | Indicate when the license has been created
+  updated_at date | Indicate when the license has been updated
+
 # FKs
+fk organizations.license_id -> licenses.id
 fk organizations.logo_id -> pictures.id
