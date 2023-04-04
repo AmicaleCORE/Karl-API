@@ -181,8 +181,8 @@ transactions | Represents a transaction between two accounts (source and target 
   author_id varchar(255) nullable | ID of the user who created the transaction, null if done by the system
   category_id int | ID of the category of the transaction
   account_id int nullable | ID of the financial account, null if external
-  credit number nullable | Amount of the credit if the transaction is a credit
-  debit number nullable | Amount of the debit if the transaction is a debit
+  credit number = 0 | Amount of the credit if the transaction is a credit
+  debit number = 0 | Amount of the debit if the transaction is a debit
   correction_id int nullable | ID of the correction if the transaction has been corrected
   created_at date
 
@@ -221,8 +221,8 @@ correction_types | Represents the type of a correction (cashier error for exampl
 personal_transactions | Represents a transaction on a personal account (refill or product purchase)
   code varchar(15) pk | Formatting: accountId + type + randCode
   account_id int | ID of the personal account (the member id)
-  credit number nullable | Amount of the credit if the transaction is a credit
-  debit number nullable | Amount of the debit if the transaction is a debit
+  credit number = 0 | Amount of the credit if the transaction is a credit
+  debit number = 0 | Amount of the debit if the transaction is a debit
   sale_code varchar(9) nullable | ID of the sell, only if the transaction is a product purchase
   created_at date | Indicate when the transaction has been created
 
