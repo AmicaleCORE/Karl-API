@@ -13,17 +13,17 @@
     "rules": {
         "indent": [
             "error",
-            "tab"
-        ],
-        "linebreak-style": [
-            "error",
-            "windows"
+            4
         ],
         "quotes": [
             "error",
             "double"
         ],
         "semi": [
+            "error",
+            "always"
+        ],
+        "eol-last": [
             "error",
             "always"
         ]
