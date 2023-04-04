@@ -70,6 +70,7 @@ fk memberships.transaction_code -> transactions.code
 product_categories | Represents the category of a product
   id int pk | ID of the category
   name varchar(255) unique | Name of the category
+  organization_id int | ID of the organization of the category
 
 products | Represents a product
   id int pk | ID of the product
@@ -85,6 +86,7 @@ products | Represents a product
 inventory | Represents the stock of a product
   product_id int pk | ID of the product
   amount int = 0 | Amount of product in stock
+  organization_id int | ID of the organization of the stock
   created_at date | Indicate when the stock has been created
   updated_at date | Indicate when the stock has been updated
 
@@ -93,6 +95,7 @@ product_movements | Represents a movement of a product (refill, sale, stock corr
   movement_type int | Type of the movement (1: Refill, 2: Sale, 3: Stock correction) [hardcoded enum]
   operation_code varchar(9) | code of the operation (pointing of the refill, sale or stock correction code field)
   product_id int | ID of the product
+  author_id int | ID of the user who created the movement
   credit int = 0 | Amount of product added to the stock
   debit int = 0 | Amount of product removed from the stock
   process_date datetime nullable | Indicate when the movement has been processed, null if not processed
@@ -138,16 +141,19 @@ discount_codes | Represents a discount code
   created_at date | Indicate when the discount code has been created
 
 # FKs
+fk product_categories.organization_id -> organizations.id
 fk sales.author_id -> users.id
 fk refill.author_id -> users.id
 fk products.organization_id -> organizations.id
 fk products.category_id -> product_categories.id
 fk products.picture_id -> pictures.id
 fk inventory.product_id -> products.id
+fk inventory.organization_id -> organizations.id
 fk product_movements.operation_code -> refill.code
 fk product_movements.operation_code -> sales.code
 fk product_movements.operation_code -> inventory_counts.code
 fk product_movements.product_id -> products.id
+fk product_movements.author_id -> users.id
 fk refill.transaction_code -> transactions.code
 fk inventory_counts.author_id -> users.id
 fk shrinkage.product_movement_id -> product_movements.id
@@ -180,8 +186,9 @@ transactions | Represents a transaction between two accounts (source and target 
   created_at date
 
 transaction_categories | Represents the category of a transaction (as many categories as needed)
-  id int pk
-  name varchar(255) unique
+  id int pk | ID of the category
+  name varchar(255) unique | Name of the category
+  organization_id int nullable | ID of the organization, null if global
 
 periodic_transaction
   id int pk | ID of the periodic transaction
@@ -208,6 +215,7 @@ transaction_correction | Represents a correction of a transaction
 correction_types | Represents the type of a correction (cashier error for example)
   id int pk | ID of the correction type
   name varchar(255) unique | Name of the correction type
+  organization_id int nullable | ID of the organization, null if global
 
 personal_transactions | Represents a transaction on a personal account (refill or product purchase)
   code varchar(15) pk | Formatting: accountId + type + randCode
@@ -223,6 +231,7 @@ fk transactions.category_id -> transaction_categories.id
 fk transactions.account_id -> financial_accounts.id
 fk transactions.author_id -> users.id
 fk transactions.billing_id -> pictures.id
+fk transaction_categories.organization_id -> organizations.id
 fk personal_transactions.account_id -> personal_accounts.id
 fk personal_transactions.sale_code -> sales.code
 fk periodic_transaction.author_id -> users.id
@@ -233,6 +242,7 @@ fk transaction_correction.type_id -> correction_types.id
 fk transaction_correction.transaction_code -> transactions.code
 fk transaction_correction.author_id -> users.id
 fk transactions.correction_id -> transaction_correction.id
+fk correction_types.organization_id -> organizations.id
 
 
 #=========# PICTURES #=========#
