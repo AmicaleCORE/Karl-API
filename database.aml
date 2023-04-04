@@ -12,6 +12,7 @@ users | Represents a user of the website
   specific_permissions text nullable | Specific permissions for the user
   organization_id int nullable | ID of the organization of the user
   preferences text nullable | Preferences of the user (serialized array)
+  is_admin boolean = false | Indicate if the user is an admin of an organization
   created_at date | Indicate when the user has been created
   updateAt date | Indicate when the user has been updated
 
@@ -295,10 +296,8 @@ organizations | Represents an organization
   name varchar(255) unique | Name of the organization
   address text | Address of the organization
   phone_number varchar(255) | Phone number of the organization
-  email varchar(255) | Email of the organization
-  website varchar(255) | Website of the organization
   logo_id int nullable | ID of the logo of the organization
-  license_key varchar(255) | License key of the organization
+  license_key varchar(255) unique | License key of the organization
   created_at date | Indicate when the organization has been created
   updated_at date | Indicate when the organization has been updated
 
