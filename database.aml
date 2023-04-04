@@ -301,6 +301,13 @@ organizations | Represents an organization
   created_at date | Indicate when the organization has been created
   updated_at date | Indicate when the organization has been updated
 
+organization_settings | Represents the settings of an organization
+  organization_id int pk | ID of the organization
+  sale_cash_account_id int nullable | ID of the cash account for the sales (need to be type 53 account)
+  sale_cb_account_id int nullable | ID of the cb account for the sales (need to be type 51 account)
+  created_at date | Indicate when the setting has been created
+  updated_at date | Indicate when the setting has been updated
+
 licenses | Represents a license
   id int pk | ID of the license
   key varchar(255) unique | License key
@@ -310,4 +317,5 @@ licenses | Represents a license
 
 # FKs
 fk organizations.license_id -> licenses.id
+fk organization_settings.organization_id -> organizations.id
 fk organizations.logo_id -> pictures.id
