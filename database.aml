@@ -14,7 +14,7 @@ users | Represents a user of the website
   preferences text nullable | Preferences of the user (serialized array)
   is_admin boolean = false | Indicate if the user is an admin of an organization
   created_at date | Indicate when the user has been created
-  updateAt date | Indicate when the user has been updated
+  update_at date | Indicate when the user has been updated
 
 groups | Represents a group
   id int pk | ID of the group
