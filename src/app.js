@@ -29,7 +29,7 @@ app.use(rateLimit({
 // Default route
 app.use(({res}) => res.status(404).json({message: "Route not found"}));
 
-const log = (secure) => console.log(`Server started on ${secure ? 'https' : 'http'}://${process.env.BIND_ADDRESS}:${process.env.PORT}`)
+const log = (secure) => console.log(`Server started on ${secure ? "https" : "http"}://${process.env.BIND_ADDRESS}:${process.env.PORT}`);
 
 // Start server
 if(process.env.SSL.toLowerCase() === "false"){
