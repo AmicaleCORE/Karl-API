@@ -298,6 +298,7 @@ organizations | Represents an organization
   email varchar(255) | Email of the organization
   website varchar(255) | Website of the organization
   logo_id int nullable | ID of the logo of the organization
+  license_key varchar(255) | License key of the organization
   created_at date | Indicate when the organization has been created
   updated_at date | Indicate when the organization has been updated
 
