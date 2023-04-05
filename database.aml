@@ -319,3 +319,5 @@ licenses | Represents a license
 fk organizations.license_id -> licenses.id
 fk organization_settings.organization_id -> organizations.id
 fk organizations.logo_id -> pictures.id
+fk organization_settings.sale_cash_account_id -> financial_accounts.id
+fk organization_settings.sale_cb_account_id -> financial_accounts.id
