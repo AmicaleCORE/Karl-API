@@ -45,7 +45,7 @@ persons | A user is created after the "/register" command on Discord
 
 personal_accounts | Represents the personal account of a member
   id int pk | ID of the account
-  member_id int unique | Member owner of the account
+  person_id int unique | Person owner of the account
   card_id text unique | ID of the student card's QR code
   amount number = 0.0 | Amount of money in the account
   created_at date | Indicate when the account has been created
@@ -61,7 +61,7 @@ memberships | Represents the membership of a member
 
 # FKs
 fk persons.organization_id -> organizations.id
-fk personal_accounts.member_id -> persons.id
+fk personal_accounts.person_id -> persons.id
 fk memberships.person_id -> persons.id
 fk memberships.transaction_code -> transactions.code
 
