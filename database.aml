@@ -179,6 +179,7 @@ transactions | Represents a transaction between two accounts (source and target 
   description text nullable
   billing_id int nullable unique | ID of the billing if the transaction is linked to one (for future billing scanning)
   author_id varchar(255) nullable | ID of the user who created the transaction, null if done by the system
+  organization_id int | ID of the organization of the transaction
   category_id int | ID of the category of the transaction
   account_id int nullable | ID of the financial account, null if external
   credit number = 0 | Amount of the credit if the transaction is a credit
@@ -232,6 +233,7 @@ fk transactions.category_id -> transaction_categories.id
 fk transactions.account_id -> financial_accounts.id
 fk transactions.author_id -> users.id
 fk transactions.billing_id -> pictures.id
+fk transactions.organization_id -> organizations.id
 fk transaction_categories.organization_id -> organizations.id
 fk personal_transactions.account_id -> personal_accounts.id
 fk personal_transactions.sale_code -> sales.code
