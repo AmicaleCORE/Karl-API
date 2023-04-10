@@ -1,136 +1,67 @@
-# This file can be load on the website https://azimutt.app
+#=========# FINANCIAL ACCOUNTS #=========#
 
-#=========# USERS #=========#
+internal_accounts | Accounts that are managed by the organization
+  id int pk | Id of the account
+  organization_id int | Id of the organization
+  name varchar(255) | Name of the account
+  amount number = 0 | Amount of money in the account
+  account_type varchar(255) | Type of the account ()
+  created_at date | Date of creation
+  updated_at date | Date of last update
+fk internal_accounts.organization_id -> organizations.id
 
-users | Represents a user of the website
-  id int pk | ID of the user
-  username varchar(255) | Formatting: surname.name
-  email varchar(255) unique | Email of the user
-  password text nullable | Bcrypt hash of the password
-  validation_code varchar(9) nullable | Code used to set the password for the first login
-  group_id int | Group of permissions
-  specific_permissions text nullable | Specific permissions for the user
-  organization_id int nullable | ID of the organization of the user
-  preferences text nullable | Preferences of the user (serialized array)
-  is_admin boolean = false | Indicate if the user is an admin of an organization
-  created_at date | Indicate when the user has been created
-  update_at date | Indicate when the user has been updated
+internal_transactions | Transaction that impact an internal account
+  code varchar(255) pk | Code of the transaction
+  transaction_type varchar(255) | Type of the transaction [hardcoded enum]
+  operation_code varchar(255) | Code of the operation (depending of the transaction type)
+  account_id int | Id of the account
+  debit number = 0 | Debit amount
+  credit number = 0 | Credit amount
+fk internal_transactions.account_id -> internal_accounts.id
+fk internal_transactions.operation_code -> internal_transfers.code
 
-groups | Represents a group
-  id int pk | ID of the group
-  name varchar(255) | Name of the group
-  permissions text | Permissions of the group (serialized array)
-  organization_id int nullable | ID of the organization of the group, null if the group is global
-  created_at date | Indicate when the group has been created
-  updated_at date | Indicate when the group has been updated
+internal_transfers | Transfer between two internal accounts
+  code varchar(255) pk | Code of the transfer
+  amount number = 0 | Amount of the transfer
+  debit_account_id int | Id of the debit account
+  credit_account_id int | Id of the credit account
+  created_at date | Date of creation
+fk internal_transfers.debit_account_id -> internal_accounts.id
+fk internal_transfers.credit_account_id -> internal_accounts.id
 
-# FKs
-fk users.group_id -> groups.id
-fk users.organization_id -> organizations.id
-fk groups.organization_id -> organizations.id
+external_accounts | Any external account
+  id int pk | Id of the account
+  organization_id int | Id of the organization
+  name varchar(255) | Name of the account
+fk external_accounts.organization_id -> organizations.id
 
-
-#=========# MEMBERS #=========#
-
-persons | A user is created after the "/register" command on Discord
-  id int pk | ID of the member
-  discord_id int unique | ID of the member on Discord
-  link_code varchar(9) nullable | Code used to link the member to his Discord account
-  first_name varchar(255) | The surname of the member
-  last_name varchar(255) | The name of the member
-  email varchar(255) nullable | The email of the member
-  organization_id int | ID of the organization of the member
-  created_at date | Indicate when the member has been created
-  updated_at date | Indicate when the member has been updated
-
-personal_accounts | Represents the personal account of a member
-  id int pk | ID of the account
-  person_id int unique | Person owner of the account
-  card_id text unique | ID of the student card's QR code
-  amount number = 0.0 | Amount of money in the account
-  created_at date | Indicate when the account has been created
-  updated_at date | Indicate when the account has been updated
-
-memberships | Represents the membership of a member
-  id int pk | ID of the membership
-  person_id int | Member owner of the membership
-  membership_type varchar(255) | Type of the membership (member, honorary_member or teaching_staff)
-  transaction_code int nullable | Code of the transaction (null if membership type is not member)
-  is_active boolean = true | Indicate if the membership is active
-  created_at date | Indicate when the membership has been created
-
-# FKs
-fk persons.organization_id -> organizations.id
-fk personal_accounts.person_id -> persons.id
-fk memberships.person_id -> persons.id
-fk memberships.transaction_code -> transactions.code
+external_transactions | Transaction that impact an external account
+  code varchar(255) pk | Code of the transaction
+  transaction_type varchar(255) | Type of the transaction [hardcoded enum]
+  operation_code varchar(255) | Code of the operation (depending of the transaction type)
+  account_id int | Id of the account
+  debit number = 0 | Debit amount
+  credit number = 0 | Credit amount
+fk external_transactions.account_id -> external_accounts.id
 
 
-#=========# PRODUCTS #=========#
+#=========# SALES #=========#
 
-product_categories | Represents the category of a product
-  id int pk | ID of the category
-  name varchar(255) | Name of the category
-  organization_id int | ID of the organization of the category
-
-products | Represents a product
-  id int pk | ID of the product
-  organization_id int | ID of the organization of the product
-  name varchar(255) | Name of the product
-  unit_price number | Price of one unit of the product
-  category_id int | ID of the category of the product
-  picture_id int nullable | ID of the picture of the product
-  alert_amount int = 0 | Amount of product under which an alert is sent
-  created_at date | Indicate when the product has been created
-  updated_at date | Indicate when the product has been updated
-
-inventory | Represents the stock of a product
-  product_id int pk | ID of the product
-  amount int = 0 | Amount of product in stock
-  organization_id int | ID of the organization of the stock
-  created_at date | Indicate when the stock has been created
-  updated_at date | Indicate when the stock has been updated
-
-product_movements | Represents a movement of a product (refill, sale, stock correction)
-  id int pk | ID of the movement
-  movement_type int | Type of the movement (1: Refill, 2: Sale, 3: Stock correction) [hardcoded enum]
-  operation_code varchar(9) | code of the operation (pointing of the refill, sale or stock correction code field)
-  product_id int | ID of the product
-  author_id int | ID of the user who created the movement
-  credit int = 0 | Amount of product added to the stock
-  debit int = 0 | Amount of product removed from the stock
-  process_date datetime nullable | Indicate when the movement has been processed, null if not processed
-  created_at date | Indicate when the movement has been created
-
-sales | Represents a sale of a pack of products
-  code varchar(9) pk | Formatting: (c|s|p) + randCode
-  author_id int | ID of the user who created the sale
-  type_id int | ID of the type of the sale (1: Cash, 2: SumUp, 3: Personal account) [hardcoded enum]
-  amount number | Amount of the sale
-  discount_code varchar(9) nullable | Code of the discount used
-  process_date datetime nullable | Indicate when the sell has been processed, null if not processed
-  cancel_date datetime nullable | Indicate when the sell has been canceled, null if not canceled (can only be cancel by user who created the sell, if the sell has not been processed, and in a delay of 5 minutes)
-  created_at date | Indicate when the sell has been created
-  updated_at date | Indicate when the sell has been updated
-
-refill | Represents a refill of the stock
-  code varchar(9) pk | Formatting: "r" + randCode
-  transaction_code varchar(15) unique | ID of the transaction
-  author_id int | ID of the user who created the refill
-  created_at date | Indicate when the refill has been created
-
-inventory_counts | Represents a correction of the stock
-  code varchar(9) pk | Formatting: "c" + randCode
-  author_id int | ID of the user who created the correction
-  is_error boolean | Indicate if the correction is an error (if false, the correction add a shrinkage entry)
-  reason varchar(255) nullable | Reason of the correction (null if is_error is false)
-  created_at date | Indicate when the correction has been created
-
-shrinkage | Represents a shrinkage of the stock (only affected by inventory corrections)
-  product_movement_id int pk | ID of the product movement
-  transaction_code varchar(15) nullable | Code of the transaction if the shrinkage is link to an account error
-  created_at date | Indicate when the shrinkage has been created
-  updated_at date | Indicate when the shrinkage has been updated
+sales | Represents a sale
+  code varchar(255) pk | Code of the sale
+  organization_id int | Id of the organization
+  ht_price number | Price of the sale
+  vat_part number | VAT part of the sale
+  discount_code varchar(255) nullable | Code of the discount, null if there is no discount
+  payment_method varchar(255) | Payment method of the sale [hardcoded enum]
+  process_date date | Date of the sale
+  transaction_code varchar(255) nullable | Id of the transaction, null if the sale is not processed
+  cancel_date date nullable | Date of the cancellation, null if the sale is not cancelled
+  created_at date | Date of creation
+  updated_at date | Date of last update
+fk sales.organization_id -> organizations.id
+fk sales.discount_code -> discount_codes.code
+fk sales.transaction_code -> internal_transactions.code
 
 discount_codes | Represents a discount code
   code varchar(9) pk | Formatting: "d" + randCode
@@ -141,140 +72,223 @@ discount_codes | Represents a discount code
   organization_id int | ID of the organization of the discount code
   created_at date | Indicate when the discount code has been created
 
-# FKs
-fk product_categories.organization_id -> organizations.id
-fk sales.author_id -> users.id
-fk refill.author_id -> users.id
-fk products.organization_id -> organizations.id
-fk products.category_id -> product_categories.id
-fk products.picture_id -> pictures.id
-fk inventory.product_id -> products.id
-fk inventory.organization_id -> organizations.id
-fk product_movements.operation_code -> refill.code
-fk product_movements.operation_code -> sales.code
-fk product_movements.operation_code -> inventory_counts.code
-fk product_movements.product_id -> products.id
-fk product_movements.author_id -> users.id
-fk refill.transaction_code -> transactions.code
-fk inventory_counts.author_id -> users.id
-fk shrinkage.product_movement_id -> product_movements.id
-fk shrinkage.transaction_code -> transactions.code
-fk discount_codes.code -> sales.discount_code
-fk discount_codes.organization_id -> organizations.id
+
+#=========# PURCHASES #=========#
+
+purchases | Represents a purchase
+  code varchar(255) pk | Code of the purchase
+  organization_id int | Id of the organization
+  bill_id int | Id of the bill
+  category_id int | Id of the category
+  created_at date | Date of creation
+fk purchases.organization_id -> organizations.id
+fk purchases.bill_id -> pictures.id
+fk purchases.category_id -> purchase_categories.id
+
+purchases_transactions
+  id int pk
+  purchase_id int
+  external_account_id int
+  internal_account_id int
+  debit number
+  credit number
+fk purchases_transactions.purchase_id -> purchases.code
+fk purchases_transactions.external_account_id -> external_accounts.id
+
+purchase_categories
+  id int pk
+  organization_id int
+  name varchar(255)
 
 
-#=========# TRANSACTIONS #=========#
+#=========# VAT ACCOUNTS #=========#
 
-financial_accounts | Represents an financial account
-  id int pk | ID of the account
-  organization_id int | ID of the organization
-  name varchar(255) | Name of the account
-  amount number = 0.0 | Amount of money in the account
-  account_category int | Number of the account category (only category 5)
-  created_at date | Indicate when the account has been created
-  updated_at date | Indicate when the account has been updated
+vat_accounts | Accounts for VAT
+  organization_id int pk | Id of the organization
+  amount number = 0 | Amount of money in the account
+fk vat_accounts.organization_id -> organizations.id
 
-transactions | Represents a transaction between two accounts (source and target can be external accounts)
-  code varchar(15) pk | Formatting : src + tgt + type + randCode
-  description text nullable
-  billing_id int nullable unique | ID of the billing if the transaction is linked to one (for future billing scanning)
-  author_id varchar(255) nullable | ID of the user who created the transaction, null if done by the system
-  organization_id int | ID of the organization of the transaction
-  category_id int | ID of the category of the transaction
-  account_id int nullable | ID of the financial account, null if external
-  credit number = 0 | Amount of the credit if the transaction is a credit
-  debit number = 0 | Amount of the debit if the transaction is a debit
-  correction_id int nullable | ID of the correction if the transaction has been corrected
-  created_at date
+vat_transactions | Transaction between two VAT accounts
+  id int pk | Id of the transaction
+  debit number = 0 | Debit amount
+  credit number = 0 | Credit amount
+  account_id int | Id of the account
+fk vat_transactions.account_id -> vat_accounts.organization_id
 
-transaction_categories | Represents the category of a transaction (as many categories as needed)
-  id int pk | ID of the category
-  name varchar(255) | Name of the category
-  organization_id int nullable | ID of the organization, null if global
 
-periodic_transaction
-  id int pk | ID of the periodic transaction
-  author_id int | ID of the user who created the periodic transaction
-  description text nullable | Description of the transaction
-  category_id int | ID of the category of the transaction
-  source int nullable | ID of the source account, null if external
-  target int nullable | ID of the target account, null if external
-  amount number | Amount of the transaction
-  start_date date | Indicate the date of the first transaction
-  next_date date | Indicate when the periodic transaction has to be done
-  period varchar(255) | Frequency of the periodic transaction (daily, weekly, monthly, yearly)
-  created_at date | Indicate when the periodic transaction has been created
-  updated_at date | Indicate when the periodic transaction has been updated
+#=========# PERSONAL #=========#
 
-transaction_correction | Represents a correction of a transaction
-  id int pk | ID of the correction
-  type_id int | ID of the type of the correction
-  reason text | Reason of the correction
-  transaction_code varchar(15) | Code of the transaction to correct
-  author_id int | ID of the user who created the correction
-  created_at date | Indicate when the correction has been created
+persons | Any person
+  id int pk | Id of the person
+  organization_id int | Id of the organization
+  first_name varchar(255) | First name of the person
+  last_name varchar(255) | Last name of the person
+  email varchar(255) nullable | Email of the person
+  created_at date | Date of creation
+  updated_at date | Date of last update
+fk persons.organization_id -> organizations.id
 
-correction_types | Represents the type of a correction (cashier error for example)
-  id int pk | ID of the correction type
-  name varchar(255) | Name of the correction type
-  organization_id int nullable | ID of the organization, null if global
+users | Any user
+  id int pk | Id of the user
+  organization_id int | Id of the organization
+  email varchar(255) | Email of the user
+  username varchar(255) | Username of the user
+  password varchar(255) | Password of the user
+  validation_code varchar(255) nullable | Validation code of the user, null if the user is validated
+  is_admin boolean = false | Is the user an admin
+  group_id int = 1 | Id of the group, 1 for default group
+  specific_permissions varchar(255) nullable | Specific permissions of the user
+  picture_id int = 1 | Id of the picture of the user
+  created_at date | Date of creation
+  updated_at date | Date of last update
+fk users.organization_id -> organizations.id
+fk users.group_id -> groups.id
+fk users.picture_id -> pictures.id
 
-personal_transactions | Represents a transaction on a personal account (refill or product purchase)
-  code varchar(15) pk | Formatting: accountId + type + randCode
-  account_id int | ID of the personal account (the member id)
-  credit number = 0 | Amount of the credit if the transaction is a credit
-  debit number = 0 | Amount of the debit if the transaction is a debit
-  sale_code varchar(9) nullable | ID of the sell, only if the transaction is a product purchase
-  created_at date | Indicate when the transaction has been created
+groups | Represents a group
+  id int pk | ID of the group
+  name varchar(255) | Name of the group
+  permissions text | Permissions of the group (serialized array)
+  organization_id int nullable | ID of the organization of the group, null if the group is global
+  created_at date | Indicate when the group has been created
+  updated_at date | Indicate when the group has been updated
+fk groups.organization_id -> organizations.id
 
-# FKs
-fk financial_accounts.organization_id -> organizations.id
-fk transactions.category_id -> transaction_categories.id
-fk transactions.account_id -> financial_accounts.id
-fk transactions.author_id -> users.id
-fk transactions.billing_id -> pictures.id
-fk transactions.organization_id -> organizations.id
-fk transaction_categories.organization_id -> organizations.id
+personal_accounts | Accounts for a person
+  id int pk | Id of the account
+  amount number = 0 | Amount of money in the account
+  person_id int | Id of the person
+  card_id varchar(255) | Id of the student card QR code
+  created_at date | Date of creation
+  updated_at date | Date of last update
+fk personal_accounts.person_id -> persons.id
+
+personal_transactions | Transaction on a personal account
+  id int pk | Id of the transaction
+  debit int = 0 | Debit amount
+  credit int = 0 | Credit amount
+  account_id int | Id of the account
+  sale_code varchar(255) nullable | Code of the sale, null if the transaction is not a sale
+  created_at date | Date of creation
 fk personal_transactions.account_id -> personal_accounts.id
 fk personal_transactions.sale_code -> sales.code
-fk periodic_transaction.author_id -> users.id
-fk periodic_transaction.category_id -> transaction_categories.id
-fk periodic_transaction.source -> financial_accounts.id
-fk periodic_transaction.target -> financial_accounts.id
-fk transaction_correction.type_id -> correction_types.id
-fk transaction_correction.transaction_code -> transactions.code
-fk transaction_correction.author_id -> users.id
-fk transactions.correction_id -> transaction_correction.id
-fk correction_types.organization_id -> organizations.id
+
+membership | Represents a membership
+  id int pk | Id of the membership
+  person_id int | Id of the person
+  price number | Price of the membership
+  end_date date | End date of the membership
+  credited_account_id int | Id of the credited account
+  created_at date | Date of creation
+  updated_at date | Date of last update
+fk membership.person_id -> persons.id
+fk membership.credited_account_id -> internal_accounts.id
+
+
+#=========# PRODUCT MANAGEMENT #=========#
+
+products | Represents a product
+  id int pk | Id of the product
+  name varchar(255) | Name of the product
+  organization_id int | Id of the organization
+  ttc_price number | Price of the product
+  tva_percentage number | VAT percentage of the product
+  picture_id int = 1 | Id of the picture of the product
+fk products.organization_id -> organizations.id
+fk products.picture_id -> pictures.id
+
+inventory | Represents the inventory of all products for all organizations
+  id int pk
+  product_id int
+  quantity int
+  organization_id int
+fk inventory.product_id -> products.id
+fk inventory.organization_id -> organizations.id
+
+product_transactions
+  code varchar(255) pk
+  operation_code varchar(255)
+  movement_type varchar(255)
+  product_id int
+  debit int = 0
+  credit int = 0
+  organization_id int
+  author_id int
+  created_at date
+fk product_transactions.product_id -> products.id
+fk product_transactions.operation_code -> sales.code
+fk product_transactions.operation_code -> purchases.code
+fk product_transactions.operation_code -> inventory_corrections.code
+fk product_transactions.organization_id -> organizations.id
+fk product_transactions.author_id -> users.id
+
+inventory_corrections
+  code varchar(255) pk
+  organization_id int
+fk inventory_corrections.organization_id -> organizations.id
+
+shrinkages
+  id int pk
+  product_transaction_id int
+  organization_id int
+  justification varchar(255)
+fk shrinkages.product_transaction_id -> product_transactions.code
+fk shrinkages.organization_id -> organizations.id
+
+
+#=========# DONATIONS #=========#
+
+donations | Represents a donation
+  id int pk | ID of the donation
+  person_id int nullable | ID of the member who made the donation
+  author_id int | ID of the user who created the donation
+  amount number | Amount of the donation
+  credited_account_id int | ID of the credited account
+  created_at date | Indicate when the donation has been created
+fk donations.person_id -> persons.id
+fk donations.author_id -> users.id
+fk donations.credited_account_id -> internal_accounts.id
+
+
+#=========# ORGANIZATIONS #=========#
+
+organizations | Represents an organization
+  id int pk | ID of the organization
+  name varchar(255) unique | Name of the organization
+  address text | Address of the organization
+  phone_number varchar(255) | Phone number of the organization
+  logo_id int nullable | ID of the logo of the organization
+  license_id int | ID of the license of the organization
+  created_at date | Indicate when the organization has been created
+  updated_at date | Indicate when the organization has been updated
+fk organizations.license_id -> licenses.id
+fk organizations.logo_id -> pictures.id
+
+organization_settings | Represents the settings of an organization
+  organization_id int pk | ID of the organization
+  sale_cash_account_id int nullable | ID of the cash account for the sales (need to be type 53 account)
+  sale_cb_account_id int nullable | ID of the cb account for the sales (need to be type 51 account)
+  created_at date | Indicate when the setting has been created
+  updated_at date | Indicate when the setting has been updated
+fk organization_settings.organization_id -> organizations.id
+
+licenses | Represents a license
+  id int pk | ID of the license
+  key varchar(255) unique | License key
+  mail varchar(255) | Mail link to the license
+  created_at date | Indicate when the license has been created
+  updated_at date | Indicate when the license has been updated
 
 
 #=========# PICTURES #=========#
 
 pictures | Represents a picture
   id int pk | ID of the picture
-  name varchar(255) | Name of the picture. Formatting: type + id
-  path text unique | Path of the picture
-  type varchar(255) | Type of the picture (Billing, Product or Organization) [hardcoded enum]
-  organization_id int nullable | ID of the organization who own the picture
+  name varchar(255) | Name of the picture
+  path varchar(255) | Path of the picture
   created_at date | Indicate when the picture has been created
   updated_at date | Indicate when the picture has been updated
 
-# FKs
-fk pictures.organization_id -> organizations.id
-
-#=========# DONATIONS #=========#
-
-donations | Represents a donation
-  id int pk | ID of the donation
-  transaction_code varchar(15) unique | ID of the transaction
-  member_id int nullable | ID of the member who made the donation
-  author_id int | ID of the user who created the donation
-  created_at date | Indicate when the donation has been created
-
-# FKs
-fk donations.transaction_code -> transactions.code
-fk donations.member_id -> persons.id
-fk donations.author_id -> users.id
 
 #=========# LOGS #=========#
 
@@ -286,40 +300,4 @@ logs | Represents a operation log
   organization_id int | ID of the organization who own the log
   created_at date | Indicate when the log has been created
   updated_at date | Indicate when the log has been updated
-
-# FKs
 fk logs.organization_id -> organizations.id
-
-
-#=========# ORGANIZATION #=========#
-
-organizations | Represents an organization
-  id int pk | ID of the organization
-  name varchar(255) unique | Name of the organization
-  address text | Address of the organization
-  phone_number varchar(255) | Phone number of the organization
-  logo_id int nullable | ID of the logo of the organization
-  license_id int | ID of the license of the organization
-  created_at date | Indicate when the organization has been created
-  updated_at date | Indicate when the organization has been updated
-
-organization_settings | Represents the settings of an organization
-  organization_id int pk | ID of the organization
-  sale_cash_account_id int nullable | ID of the cash account for the sales (need to be type 53 account)
-  sale_cb_account_id int nullable | ID of the cb account for the sales (need to be type 51 account)
-  created_at date | Indicate when the setting has been created
-  updated_at date | Indicate when the setting has been updated
-
-licenses | Represents a license
-  id int pk | ID of the license
-  key varchar(255) unique | License key
-  mail varchar(255) | Mail link to the license
-  created_at date | Indicate when the license has been created
-  updated_at date | Indicate when the license has been updated
-
-# FKs
-fk organizations.license_id -> licenses.id
-fk organization_settings.organization_id -> organizations.id
-fk organizations.logo_id -> pictures.id
-fk organization_settings.sale_cash_account_id -> financial_accounts.id
-fk organization_settings.sale_cb_account_id -> financial_accounts.id
