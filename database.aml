@@ -44,6 +44,21 @@ external_transactions | Transaction that impact an external account
   credit number = 0 | Credit amount
 fk external_transactions.account_id -> external_accounts.id
 
+periodic_transaction
+  id int PK | Id of the periodic transaction
+  source_account_id int | Id of the source account
+  source_account_type varchar(255) | Type of the source account (internal or external)
+  destination_account_id int | Id of the destination account
+  destination_account_type varchar(255) | Type of the destination account (internal or external)
+  amount number = 0 | Amount of the transaction (positive or negative)
+  start_date date | Indicate the date of the first transaction
+  next_date date | Indicate when the periodic transaction has to be done
+  period varchar(255) | Frequency of the periodic transaction (daily, weekly, monthly, yearly)
+fk periodic_transaction.source_account_id -> internal_accounts.id
+fk periodic_transaction.destination_account_id -> internal_accounts.id
+fk periodic_transaction.source_account_id -> external_accounts.id
+fk periodic_transaction.destination_account_id -> external_accounts.id
+
 
 #=========# SALES #=========#
 
