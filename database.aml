@@ -100,15 +100,15 @@ fk purchases.organization_id -> organizations.id
 fk purchases.bill_id -> pictures.id
 fk purchases.category_id -> purchase_categories.id
 
-purchases_transactions
-  id int pk
-  purchase_id int
-  external_account_id int
-  internal_account_id int
-  debit number
-  credit number
+purchases_transactions | Transactions created by a purchase
+  id int pk | Id of the transaction
+  purchase_id int | Id of the purchase
+  internal_transaction_id int | Id of the internal transaction
+  external_transaction_id int | Id of the external transaction
+  created_at date | Date of creation
 fk purchases_transactions.purchase_id -> purchases.code
-fk purchases_transactions.external_account_id -> external_accounts.id
+fk purchases_transactions.internal_transaction_id -> internal_transactions.code
+fk purchases_transactions.external_transaction_id -> external_transactions.code
 
 purchase_categories
   id int pk
