@@ -13,21 +13,19 @@ fk internal_accounts.organization_id -> organizations.id
 internal_transactions | Transaction that impact an internal account
   code varchar(255) pk | Code of the transaction
   transaction_type varchar(255) | Type of the transaction [hardcoded enum]
-  operation_code varchar(255) | Code of the operation (depending of the transaction type)
   account_id int | Id of the account
   debit number = 0 | Debit amount
   credit number = 0 | Credit amount
 fk internal_transactions.account_id -> internal_accounts.id
-fk internal_transactions.operation_code -> internal_transfers.code
 
 internal_transfers | Transfer between two internal accounts
   code varchar(255) pk | Code of the transfer
   amount number = 0 | Amount of the transfer
-  debit_account_id int | Id of the debit account
-  credit_account_id int | Id of the credit account
+  debit_transaction_code varchar(255) | Code of the debit transaction
+  credit_transaction_code varchar(255) | Code of the credit transaction
   created_at date | Date of creation
-fk internal_transfers.debit_account_id -> internal_accounts.id
-fk internal_transfers.credit_account_id -> internal_accounts.id
+fk internal_transfers.debit_transaction_code -> internal_transactions.code
+fk internal_transfers.credit_transaction_code -> internal_transactions.code
 
 external_accounts | Any external account
   id int pk | Id of the account
@@ -193,11 +191,11 @@ membership | Represents a membership
   person_id int | Id of the person
   membership_type int | Type of membership
   end_date date nullable | End date of the membership, null if no end date
-  internal_transaction_id int | Id of the internal transaction
+  internal_transaction_code varchar(255) | Id of the internal transaction
   created_at date | Date of creation
 fk membership.person_id -> persons.id
 fk membership.membership_type -> membership_types.id
-fk membership.internal_transaction_id -> internal_accounts.id
+fk membership.internal_transaction_code -> internal_transactions.code
 
 
 membership_types | Types of membership
@@ -271,12 +269,11 @@ donations | Represents a donation
   id int pk | ID of the donation
   person_id int nullable | ID of the member who made the donation
   author_id int | ID of the user who created the donation
-  amount number | Amount of the donation
-  credited_account_id int | ID of the credited account
+  internal_transaction_code varchar(255) | ID of the internal transaction
   created_at date | Indicate when the donation has been created
 fk donations.person_id -> persons.id
 fk donations.author_id -> users.id
-fk donations.credited_account_id -> internal_accounts.id
+fk donations.internal_transaction_code -> internal_transactions.code
 
 
 #=========# ORGANIZATIONS #=========#
