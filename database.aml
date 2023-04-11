@@ -208,9 +208,16 @@ products | Represents a product
   organization_id int | Id of the organization
   ttc_price number | Price of the product
   tva_percentage number | VAT percentage of the product
+  category_id int | Id of the category
   picture_id int = 1 | Id of the picture of the product
 fk products.organization_id -> organizations.id
+fk products.category_id -> product_categories.id
 fk products.picture_id -> pictures.id
+
+product_categories | Represents a category of products
+  id int pk | Id of the category
+  name varchar(255) | Name of the category
+  organization_id int | Id of the organization
 
 inventory | Represents the inventory of all products for all organizations
   id int pk
