@@ -125,9 +125,9 @@ fk vat_accounts.organization_id -> organizations.id
 
 vat_transactions | Transaction between two VAT accounts
   id int pk | Id of the transaction
+  account_id int | Id of the account
   debit number = 0 | Debit amount
   credit number = 0 | Credit amount
-  account_id int | Id of the account
 fk vat_transactions.account_id -> vat_accounts.organization_id
 
 
@@ -191,13 +191,19 @@ fk personal_transactions.sale_code -> sales.code
 membership | Represents a membership
   id int pk | Id of the membership
   person_id int | Id of the person
-  price number | Price of the membership
-  end_date date | End date of the membership
-  credited_account_id int | Id of the credited account
+  membership_type int | Type of membership
+  end_date date nullable | End date of the membership, null if no end date
+  internal_transaction_id int | Id of the internal transaction
   created_at date | Date of creation
-  updated_at date | Date of last update
 fk membership.person_id -> persons.id
-fk membership.credited_account_id -> internal_accounts.id
+fk membership.internal_transaction_id -> internal_accounts.id
+
+
+membership_types | Types of membership
+  id int pk | Id of the membership type
+  name varchar(255) | Name of the membership
+  price int | Price of the membership
+  updated_at date | Date of last update
 
 
 #=========# PRODUCT MANAGEMENT #=========#
