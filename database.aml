@@ -196,6 +196,7 @@ membership | Represents a membership
   internal_transaction_id int | Id of the internal transaction
   created_at date | Date of creation
 fk membership.person_id -> persons.id
+fk membership.membership_type -> membership_types.id
 fk membership.internal_transaction_id -> internal_accounts.id
 
 
