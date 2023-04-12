@@ -110,10 +110,11 @@ fk purchases_transactions.purchase_id -> purchases.code
 fk purchases_transactions.internal_transaction_id -> internal_transactions.code
 fk purchases_transactions.external_transaction_id -> external_transactions.code
 
-purchase_categories
-  id int pk
-  organization_id int
-  name varchar(255)
+purchase_categories | Represents a category of purchase
+  id int pk | Id of the category
+  organization_id int | Id of the organization
+  name varchar(255) | Name of the category
+fk purchase_categories.organization_id -> organizations.id
 
 
 #=========# INCOMES #=========#
@@ -148,15 +149,15 @@ users | Any user
   username varchar(255) | Username of the user
   password varchar(255) | Password of the user
   validation_code varchar(255) nullable | Validation code of the user, null if the user is validated
-  is_admin boolean = false | Is the user an admin
+  is_organization_admin boolean = false | Is the user is the admin account of an organization
   group_id int = 1 | Id of the group, 1 for default group
   specific_permissions varchar(255) nullable | Specific permissions of the user
-  picture_id int = 1 | Id of the picture of the user
+  avatar_id int = 1 | Id of the picture of the user
   created_at date | Date of creation
   updated_at date | Date of last update
 fk users.organization_id -> organizations.id
 fk users.group_id -> groups.id
-fk users.picture_id -> pictures.id
+fk users.avatar_id -> pictures.id
 
 groups | Represents a group
   id int pk | ID of the group
@@ -225,23 +226,22 @@ product_categories | Represents a category of products
   organization_id int | Id of the organization
 
 inventory | Represents the inventory of all products for all organizations
-  id int pk
-  product_id int
-  quantity int
-  organization_id int
+  id int pk | Id of the inventory
+  product_id int | Id of the product
+  quantity int = 0 | Quantity of the product
+  organization_id int | Id of the organization
 fk inventory.product_id -> products.id
 fk inventory.organization_id -> organizations.id
 
-product_transactions
-  code varchar(255) pk
-  operation_code varchar(255)
-  movement_type varchar(255)
-  product_id int
-  debit int = 0
-  credit int = 0
-  organization_id int
-  author_id int
-  created_at date
+product_transactions | Represents a transaction on a product
+  code varchar(255) pk | Code of the transaction
+  operation_code varchar(255) | Code of the operation (can be a sale, a purchase, an inventory correction, etc.)
+  product_id int | Id of the product
+  debit int = 0 | Debit amount
+  credit int = 0 | Credit amount
+  organization_id int | Id of the organization
+  author_id int | Id of the user who made the transaction
+  created_at date | Date of creation
 fk product_transactions.product_id -> products.id
 fk product_transactions.operation_code -> sales.code
 fk product_transactions.operation_code -> purchases.code
@@ -249,16 +249,16 @@ fk product_transactions.operation_code -> inventory_corrections.code
 fk product_transactions.organization_id -> organizations.id
 fk product_transactions.author_id -> users.id
 
-inventory_corrections
-  code varchar(255) pk
-  organization_id int
+inventory_corrections | Represents an inventory correction
+  code varchar(255) pk | Code of the correction
+  organization_id int | Id of the organization
 fk inventory_corrections.organization_id -> organizations.id
 
-shrinkages
-  id int pk
-  product_transaction_id int
-  organization_id int
-  justification varchar(255)
+shrinkages | Represents a shrinkage
+  id int pk | Id of the shrinkage
+  product_transaction_id int | Id of the product transaction
+  organization_id int | Id of the organization
+  justification varchar(255) | Justification of the shrinkage
 fk shrinkages.product_transaction_id -> product_transactions.code
 fk shrinkages.organization_id -> organizations.id
 
