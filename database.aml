@@ -223,6 +223,7 @@ product_categories | Represents a category of products
   id int pk | Id of the category
   name varchar(255) | Name of the category
   organization_id int | Id of the organization
+fk product_categories.organization_id -> organizations.id
 
 inventory | Represents the inventory of all products for all organizations
   id int pk | Id of the inventory
