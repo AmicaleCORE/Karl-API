@@ -65,25 +65,28 @@ sales | Represents a sale
   organization_id int | Id of the organization
   ht_price number | Price of the sale
   vat_part number | VAT part of the sale
-  discount_code varchar(255) nullable | Code of the discount, null if there is no discount
-  payment_method varchar(255) | Payment method of the sale [hardcoded enum]
-  process_date date | Date of the sale
+  tax_part number | Tax part of the sale, applied on the VAT included price
+  discount_id int nullable | Code of the discount, null if there is no discount
+  target_account_id int | Id of the account where the money will be credited (depending of the payment method)
   transaction_code varchar(255) nullable | Id of the transaction, null if the sale is not processed
   cancel_date date nullable | Date of the cancellation, null if the sale is not cancelled
   created_at date | Date of creation
   updated_at date | Date of last update
 fk sales.organization_id -> organizations.id
-fk sales.discount_code -> discount_codes.code
+fk sales.discount_id -> discount_codes.id
+fk sales.target_account_id -> internal_accounts.id
 fk sales.transaction_code -> internal_transactions.code
 
 discount_codes | Represents a discount code
-  code varchar(9) pk | Formatting: "d" + randCode
+  id int pk | Id of the discount code
+  code varchar(9) | Formatting: "d" + randCode
+  organization_id int | ID of the organization of the discount code
   amount number | Amount of the discount
   is_percentage boolean | Indicate if the discount is a percentage
   validity_start datetime | Indicate when the discount code is valid
   validity_end datetime nullable | Indicate when the discount code is not valid anymore, null if no end date
-  organization_id int | ID of the organization of the discount code
   created_at date | Indicate when the discount code has been created
+fk discount_codes.organization_id -> organizations.id
 
 
 #=========# PURCHASES #=========#
