@@ -63,9 +63,8 @@ fk periodic_transaction.destination_account_id -> external_accounts.id
 sales | Represents a sale
   code varchar(255) pk | Code of the sale
   organization_id int | Id of the organization
-  ht_price number | Price of the sale
-  vat_part number | VAT part of the sale
-  tax_part number | Tax part of the sale, applied on the VAT included price
+  price number | Price of the sale
+  tax_part number | Tax part of the sale
   discount_id int nullable | Code of the discount, null if there is no discount
   target_account_id int | Id of the account where the money will be credited (depending of the payment method)
   transaction_code varchar(255) nullable | Id of the transaction, null if the sale is not processed
@@ -117,19 +116,17 @@ purchase_categories
   name varchar(255)
 
 
-#=========# VAT ACCOUNTS #=========#
+#=========# INCOMES #=========#
 
-vat_accounts | Accounts for VAT
-  organization_id int pk | Id of the organization
-  amount number = 0 | Amount of money in the account
-fk vat_accounts.organization_id -> organizations.id
-
-vat_transactions | Transaction between two VAT accounts
-  id int pk | Id of the transaction
-  account_id int | Id of the account
-  debit number = 0 | Debit amount
-  credit number = 0 | Credit amount
-fk vat_transactions.account_id -> vat_accounts.organization_id
+incomes | Represents an income
+  code varchar(255) pk | Code of the income
+  organization_id int | Id of the organization
+  transaction_code varchar(255) nullable | Id of the transaction, null if the income is not processed
+  tax_transaction_code varchar(255) nullable | Id of the transaction, null if the income is not processed
+  created_at date | Date of creation
+fk incomes.organization_id -> organizations.id
+fk incomes.transaction_code -> internal_transactions.code
+fk incomes.tax_transaction_code -> internal_transactions.code
 
 
 #=========# PERSONAL #=========#
