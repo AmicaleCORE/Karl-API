@@ -254,6 +254,14 @@ inventory_corrections | Represents an inventory correction
   organization_id int | Id of the organization
 fk inventory_corrections.organization_id -> organizations.id
 
+minor_inventory_corrections | Represents an inventory correction that affect only one product
+  id int pk | Id of the correction
+  product_transaction_code varchar(255) | Id of the product transaction
+  organization_id int | Id of the organization
+  state varchar(255) | State of the correction, can be "pending", "accepted" or "refused" (when pending, the correction is already effective)
+fk minor_inventory_corrections.product_transaction_code -> product_transactions.code
+fk minor_inventory_corrections.organization_id -> organizations.id
+
 shrinkages | Represents a shrinkage
   id int pk | Id of the shrinkage
   product_transaction_id int | Id of the product transaction
