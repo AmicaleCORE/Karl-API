@@ -198,7 +198,6 @@ fk membership.person_id -> persons.id
 fk membership.membership_type -> membership_types.id
 fk membership.internal_transaction_code -> internal_transactions.code
 
-
 membership_types | Types of membership
   id int pk | Id of the membership type
   name varchar(255) | Name of the membership
@@ -300,8 +299,7 @@ fk organizations.logo_id -> pictures.id
 
 organization_settings | Represents the settings of an organization
   organization_id int pk | ID of the organization
-  sale_cash_account_id int nullable | ID of the cash account for the sales (need to be type 53 account)
-  sale_cb_account_id int nullable | ID of the cb account for the sales (need to be type 51 account)
+  settings text | Settings of the organization (serialized array)
   created_at date | Indicate when the setting has been created
   updated_at date | Indicate when the setting has been updated
 fk organization_settings.organization_id -> organizations.id
