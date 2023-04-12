@@ -14,8 +14,8 @@ internal_transactions | Transaction that impact an internal account
   code varchar(255) pk | Code of the transaction
   transaction_type varchar(255) | Type of the transaction [hardcoded enum]
   account_id int | Id of the account
-  debit number = 0 | Debit amount
-  credit number = 0 | Credit amount
+  debit_amount number = 0 | Debit amount
+  credit_amount number = 0 | Credit amount
 fk internal_transactions.account_id -> internal_accounts.id
 
 internal_transfers | Transfer between two internal accounts
@@ -38,8 +38,8 @@ external_transactions | Transaction that impact an external account
   transaction_type varchar(255) | Type of the transaction [hardcoded enum]
   operation_code varchar(255) | Code of the operation (depending of the transaction type)
   account_id int | Id of the account
-  debit number = 0 | Debit amount
-  credit number = 0 | Credit amount
+  debit_amount number = 0 | Debit amount
+  credit_amount number = 0 | Credit amount
 fk external_transactions.account_id -> external_accounts.id
 
 periodic_transaction
@@ -64,22 +64,21 @@ sales | Represents a sale
   code varchar(255) pk | Code of the sale
   organization_id int | Id of the organization
   price number | Price of the sale
-  tax_part number | Tax part of the sale
-  discount_id int nullable | Code of the discount, null if there is no discount
+  tax_part number | Tax part of the sale, does not include VAT
+  discount_code varchar(255) nullable | Code of the discount, null if there is no discount
   target_account_id int | Id of the account where the money will be credited (depending of the payment method)
   transaction_code varchar(255) nullable | Id of the transaction, null if the sale is not processed
   cancel_date date nullable | Date of the cancellation, null if the sale is not cancelled
   created_at date | Date of creation
   updated_at date | Date of last update
 fk sales.organization_id -> organizations.id
-fk sales.discount_id -> discount_codes.id
+fk sales.discount_code -> discount_codes.code
 fk sales.target_account_id -> internal_accounts.id
 fk sales.transaction_code -> internal_transactions.code
 
 discount_codes | Represents a discount code
-  id int pk | Id of the discount code
-  code varchar(9) | Formatting: "d" + randCode
-  organization_id int | ID of the organization of the discount code
+  code varchar(9) pk | Formatting: "d" + randCode
+  organization_id int pk | ID of the organization of the discount code
   amount number | Amount of the discount
   is_percentage boolean | Indicate if the discount is a percentage
   validity_start datetime | Indicate when the discount code is valid
@@ -112,7 +111,7 @@ fk purchases_transactions.external_transaction_id -> external_transactions.code
 
 purchase_categories | Represents a category of purchase
   id int pk | Id of the category
-  organization_id int | Id of the organization
+  organization_id int nullable | Id of the organization, null if the category is global
   name varchar(255) | Name of the category
 fk purchase_categories.organization_id -> organizations.id
 
@@ -144,10 +143,10 @@ fk persons.organization_id -> organizations.id
 
 users | Any user
   id int pk | Id of the user
-  organization_id int | Id of the organization
+  organization_id int nullable | Id of the organization, null if the user is not linked to an organization
   email varchar(255) | Email of the user
   username varchar(255) | Username of the user
-  password varchar(255) | Password of the user
+  password varchar(255) nullable | Password of the user
   validation_code varchar(255) nullable | Validation code of the user, null if the user is validated
   is_organization_admin boolean = false | Is the user is the admin account of an organization
   group_id int = 1 | Id of the group, 1 for default group
@@ -170,17 +169,19 @@ fk groups.organization_id -> organizations.id
 
 personal_accounts | Accounts for a person
   id int pk | Id of the account
-  amount number = 0 | Amount of money in the account
+  organization_id int | Id of the organization
   person_id int | Id of the person
   card_id varchar(255) | Id of the student card QR code
+  amount number = 0 | Amount of money in the account
   created_at date | Date of creation
   updated_at date | Date of last update
+fk personal_accounts.organization_id -> organizations.id
 fk personal_accounts.person_id -> persons.id
 
 personal_transactions | Transaction on a personal account
   id int pk | Id of the transaction
-  debit int = 0 | Debit amount
-  credit int = 0 | Credit amount
+  debit_amount number = 0 | Debit amount
+  credit_amount number = 0 | Credit amount
   account_id int | Id of the account
   sale_code varchar(255) nullable | Code of the sale, null if the transaction is not a sale
   created_at date | Date of creation
@@ -200,9 +201,11 @@ fk membership.internal_transaction_code -> internal_transactions.code
 
 membership_types | Types of membership
   id int pk | Id of the membership type
+  organization_id int | Id of the organization
   name varchar(255) | Name of the membership
-  price int | Price of the membership
-  updated_at date | Date of last update
+  price number | Price of the membership
+  end_date date nullable | End date of the membership, null if no end date
+fk membership_types.organization_id -> organizations.id
 
 
 #=========# PRODUCT MANAGEMENT #=========#
@@ -221,7 +224,7 @@ fk products.picture_id -> pictures.id
 product_categories | Represents a category of products
   id int pk | Id of the category
   name varchar(255) | Name of the category
-  organization_id int | Id of the organization
+  organization_id int nullable | Id of the organization, null if the category is global
 fk product_categories.organization_id -> organizations.id
 
 inventory | Represents the inventory of all products for all organizations
@@ -234,10 +237,11 @@ fk inventory.organization_id -> organizations.id
 
 product_transactions | Represents a transaction on a product
   code varchar(255) pk | Code of the transaction
+  operation_type varchar(255) | Type of the operation [hardcoded enum]
   operation_code varchar(255) | Code of the operation (can be a sale, a purchase, an inventory correction, etc.)
   product_id int | Id of the product
-  debit int = 0 | Debit amount
-  credit int = 0 | Credit amount
+  debit_amount int = 0 | Debit amount
+  credit_amount int = 0 | Credit amount
   organization_id int | Id of the organization
   author_id int | Id of the user who made the transaction
   created_at date | Date of creation
@@ -251,15 +255,25 @@ fk product_transactions.author_id -> users.id
 inventory_corrections | Represents an inventory correction
   code varchar(255) pk | Code of the correction
   organization_id int | Id of the organization
+  correction_reason_id int | Id of the reason of the correction
 fk inventory_corrections.organization_id -> organizations.id
+fk inventory_corrections.correction_reason_id -> inventory_correction_reasons.id
 
 minor_inventory_corrections | Represents an inventory correction that affect only one product
   id int pk | Id of the correction
-  product_transaction_code varchar(255) | Id of the product transaction
   organization_id int | Id of the organization
+  product_transaction_code varchar(255) | Id of the product transaction
+  correction_reason_id int | Id of the reason of the correction
   state varchar(255) | State of the correction, can be "pending", "accepted" or "refused" (when pending, the correction is already effective)
-fk minor_inventory_corrections.product_transaction_code -> product_transactions.code
 fk minor_inventory_corrections.organization_id -> organizations.id
+fk minor_inventory_corrections.product_transaction_code -> product_transactions.code
+fk minor_inventory_corrections.correction_reason_id -> inventory_correction_reasons.id
+
+inventory_correction_reasons | Represents a reason for an inventory correction
+  id int pk | Id of the reason
+  organization_id int nullable | Id of the organization, null if global
+  reason varchar(255) | Reason of the correction
+fk inventory_correction_reasons.organization_id -> organizations.id
 
 shrinkages | Represents a shrinkage
   id int pk | Id of the shrinkage
@@ -292,22 +306,17 @@ organizations | Represents an organization
   phone_number varchar(255) | Phone number of the organization
   logo_id int nullable | ID of the logo of the organization
   license_id int | ID of the license of the organization
+  settings text | Settings of the organization (serialized array)
   created_at date | Indicate when the organization has been created
   updated_at date | Indicate when the organization has been updated
 fk organizations.license_id -> licenses.id
 fk organizations.logo_id -> pictures.id
 
-organization_settings | Represents the settings of an organization
-  organization_id int pk | ID of the organization
-  settings text | Settings of the organization (serialized array)
-  created_at date | Indicate when the setting has been created
-  updated_at date | Indicate when the setting has been updated
-fk organization_settings.organization_id -> organizations.id
-
 licenses | Represents a license
   id int pk | ID of the license
   key varchar(255) unique | License key
   mail varchar(255) | Mail link to the license
+  expiration_date date | Expiration date of the license
   created_at date | Indicate when the license has been created
   updated_at date | Indicate when the license has been updated
 
@@ -318,7 +327,6 @@ pictures | Represents a picture
   id int pk | ID of the picture
   name varchar(255) | Name of the picture
   path varchar(255) | Path of the picture
-  type varchar(255) | Type of the picture (can be "logo", "product", etc.) [hardcoded enum]
   created_at date | Indicate when the picture has been created
   updated_at date | Indicate when the picture has been updated
 
@@ -330,7 +338,7 @@ logs | Represents a operation log
   type varchar(255) | Type of the log (sale, transaction, product movement, etc.) [hardcoded enum]
   state varchar(255) | State of the log (created, processed, etc.) [hardcoded enum]
   message text nullable | Message of the log if needed (error message for example)
-  organization_id int | ID of the organization who own the log
+  organization_id int nullable | ID of the organization who own the log, null if global
   created_at date | Indicate when the log has been created
   updated_at date | Indicate when the log has been updated
 fk logs.organization_id -> organizations.id
