@@ -318,6 +318,7 @@ pictures | Represents a picture
   id int pk | ID of the picture
   name varchar(255) | Name of the picture
   path varchar(255) | Path of the picture
+  type varchar(255) | Type of the picture (can be "logo", "product", etc.) [hardcoded enum]
   created_at date | Indicate when the picture has been created
   updated_at date | Indicate when the picture has been updated
 
