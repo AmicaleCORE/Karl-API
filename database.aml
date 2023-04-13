@@ -193,7 +193,7 @@ fk personal_transactions.sale_code -> sales.code
 membership | Represents a membership
   id int pk | Id of the membership
   person_id int | Id of the person
-  membership_type int | Type of membership
+  membership_type_id int | Type of membership
   end_date date nullable | End date of the membership, null if no end date
   internal_transaction_code varchar(255) | Id of the internal transaction
   created_at date | Date of creation
