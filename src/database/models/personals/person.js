@@ -33,7 +33,7 @@ module.exports = (sequelize) => {
         createdAt: true,
         updatedAt: true
     });
-    const Organization = getModel(sequelize, "organisations/organization.js");
+    const Organization = getModel(sequelize, "organizations/organization.js");
     Person.belongsTo(Organization, {foreignKey: "organization_id"});
     return Person;
 };
