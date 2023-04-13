@@ -60,8 +60,8 @@ module.exports = (sequelize) => {
         createdAt: true,
         updatedAt: true
     });
-    const Organization = getModel(sequelize, "organization/organization.js");
-    const Group = getModel(sequelize, "user/group.js");
+    const Organization = getModel(sequelize, "organizations/organization.js");
+    const Group = getModel(sequelize, "personals/group.js");
     User.belongsTo(Organization, {foreignKey: "organization_id"});
     User.belongsTo(Group, {foreignKey: "group_id"});
     return User;
