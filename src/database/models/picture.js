@@ -1,8 +1,7 @@
 const { DataTypes } = require("sequelize");
-const {getModel} = require("../../handlers/modelsHandler");
 
 module.exports = (sequelize) => {
-    const Picture = sequelize.define("picture", {
+    return sequelize.define("picture", {
         id: {
             type: DataTypes.INTEGER,
             primaryKey: true,
@@ -22,5 +21,4 @@ module.exports = (sequelize) => {
         createdAt: true,
         updatedAt: true
     });
-    return Picture;
 };

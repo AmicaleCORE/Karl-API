@@ -40,7 +40,7 @@ module.exports = (sequelize) => {
     });
     const Picture = getModel(sequelize, "picture.js");
     const License = getModel(sequelize, "organization/license.js");
-    Organization.belongsTo(Organization, {foreignKey: "logo_id"});
-    Organization.belongsTo(License, {foreignKey: "license_id"})
+    Organization.belongsTo(Picture, {foreignKey: "logo_id"});
+    Organization.belongsTo(License, {foreignKey: "license_id"});
     return Organization;
 };

@@ -1,8 +1,7 @@
 const { DataTypes } = require("sequelize");
-const {getModel} = require("../../../handlers/modelsHandler");
 
 module.exports = (sequelize) => {
-    const Group = sequelize.define("group", {
+    return sequelize.define("group", {
         id: {
             type: DataTypes.INTEGER,
             primaryKey: true,
@@ -29,5 +28,4 @@ module.exports = (sequelize) => {
         createdAt: true,
         updatedAt: true
     });
-    return Group;
 };

@@ -1,7 +1,7 @@
 const { DataTypes } = require("sequelize");
 
 module.exports = (sequelize) => {
-    const License = sequelize.define("license", {
+    return sequelize.define("license", {
         id: {
             type: DataTypes.INTEGER,
             primaryKey: true,
@@ -29,5 +29,4 @@ module.exports = (sequelize) => {
         createdAt: true,
         updatedAt: true
     });
-    return License;
 };
