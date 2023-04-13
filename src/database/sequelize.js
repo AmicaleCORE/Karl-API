@@ -18,7 +18,7 @@ else
 
 
 // Loading models
-require("../handlers/modelsHandler")(sequelize);
+require("../handlers/modelsHandler").loadModels(sequelize);
 
 sequelize.sync().then(() => {
     console.log("Database synchronized");

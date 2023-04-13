@@ -1,6 +1,7 @@
 const { DataTypes } = require("sequelize");
 
 module.exports = (sequelize) => {
+    console.log("Loading User model...");
     const User = sequelize.define("User", {
         id: {
             type: DataTypes.INTEGER,

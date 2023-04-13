@@ -1,6 +1,8 @@
 const { DataTypes } = require("sequelize");
+const { getModel } = require("../../../handlers/modelsHandler");
 
 module.exports = (sequelize) => {
+    console.log("Loading Order model...");
     const Order = sequelize.define("Order", {
         id: {
             type: DataTypes.INTEGER,
@@ -16,7 +18,7 @@ module.exports = (sequelize) => {
             allowNull: false
         }
     });
-    const User = require("./sampleUser")(sequelize);
+    const User = getModel(sequelize, "sample/sampleUser.js");
     Order.belongsTo(User, { foreignKey: "author_id" });
     return Order;
 };
