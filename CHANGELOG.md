@@ -8,6 +8,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 ### Added
 - [Encryption tools](src/utils/encryption.js)
+- [Models handler](src/handlers/modelsHandler.js)
 
 ### Fixed
 - Nothing

@@ -6,6 +6,9 @@ const https = require("https");
 const fs = require("fs");
 const app = express();
 
+// Init database
+require("./database/sequelize");
+
 // Importing middlewares
 const cors = require("cors");
 const helmet = require("helmet");
