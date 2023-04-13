@@ -16,6 +16,8 @@ internal_transactions | Transaction that impact an internal account
   account_id int | Id of the account
   debit_amount number = 0 | Debit amount
   credit_amount number = 0 | Credit amount
+  created_at date | Date of creation
+  updated_at date | Date of last update
 fk internal_transactions.account_id -> internal_accounts.id
 
 internal_transfers | Transfer between two internal accounts
