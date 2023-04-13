@@ -336,9 +336,11 @@ pictures | Represents a picture
 logs | Represents a operation log
   reference varchar(15) pk | Reference of the log (can be a sale code, a transaction code, a product movement id, etc.)
   type varchar(255) | Type of the log (sale, transaction, product movement, etc.) [hardcoded enum]
+  author_id int nullable | ID of the user who made the log, null if not created by a user
   state varchar(255) | State of the log (created, processed, etc.) [hardcoded enum]
   message text nullable | Message of the log if needed (error message for example)
   organization_id int nullable | ID of the organization who own the log, null if global
   created_at date | Indicate when the log has been created
   updated_at date | Indicate when the log has been updated
+fk logs.author_id -> users.id
 fk logs.organization_id -> organizations.id
