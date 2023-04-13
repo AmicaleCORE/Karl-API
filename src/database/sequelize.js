@@ -18,14 +18,9 @@ else
 
 
 // Loading models
-// const models = require('../handlers/modelHandler')(sequelize);
-const models = undefined; // TODO: Load models
+require("../handlers/modelsHandler")(sequelize);
 
-sequelize.sync({force: process.env.DB_FORCE_INIT.toLowerCase() === "true"}).then(() => {
+sequelize.sync().then(() => {
     console.log("Database synchronized");
     // TODO: Add defaults and seed if needed
 });
-
-module.exports = {
-    models
-};
