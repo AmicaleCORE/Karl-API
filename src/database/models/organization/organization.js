@@ -1,4 +1,5 @@
 const { DataTypes } = require("sequelize");
+const {getModel} = require("../../../handlers/modelsHandler");
 
 module.exports = (sequelize) => {
     const Organization = sequelize.define("organization", {
@@ -9,7 +10,7 @@ module.exports = (sequelize) => {
         },
         name: {
             type: DataTypes.STRING,
-            primaryKey: true
+            allowNull: false
         },
         address: {
             type: DataTypes.STRING,
@@ -29,10 +30,17 @@ module.exports = (sequelize) => {
         },
         settings: {
             type: DataTypes.STRING,
-            allowNull: false,
-            defaultValue: "{}"
+            allowNull: false
         }
+    },
+    {
+        underscored: true,
+        createdAt: true,
+        updatedAt: true
     });
-    // Define FKs
+    const Picture = getModel(sequelize, "picture.js");
+    const License = getModel(sequelize, "organization/license.js");
+    Organization.belongsTo(Organization, {foreignKey: "logo_id"});
+    Organization.belongsTo(License, {foreignKey: "license_id"})
     return Organization;
 };

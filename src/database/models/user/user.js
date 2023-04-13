@@ -1,5 +1,5 @@
 const { DataTypes } = require("sequelize");
-const {getModel} = require("../../handlers/modelsHandler");
+const {getModel} = require("../../../handlers/modelsHandler");
 
 module.exports = (sequelize) => {
     const User = sequelize.define("user", {
@@ -13,20 +13,23 @@ module.exports = (sequelize) => {
             allowNull: true
         },
         email: {
-            type: DataTypes.STRING,
-            allowNull: false
+            type: DataTypes.STRING(255),
+            allowNull: false,
+            validate: {
+                isEmail: true
+            }
         },
         username: {
-            type: DataTypes.STRING,
+            type: DataTypes.STRING(255),
             allowNull: false,
             unique: true
         },
         password: {
-            type: DataTypes.STRING,
+            type: DataTypes.STRING(255),
             allowNull: true
         },
         validation_code: {
-            type: DataTypes.STRING,
+            type: DataTypes.STRING(255),
             allowNull: true
         },
         is_organization_admin: {
@@ -40,16 +43,26 @@ module.exports = (sequelize) => {
             defaultValue: 1
         },
         specific_permissions: {
-            type: DataTypes.STRING,
-            allowNull: true
+            type: DataTypes.STRING(255),
+            allowNull: true,
+            validate: {
+                isJSON: true
+            }
         },
         avatar_id: {
             type: DataTypes.INTEGER,
             allowNull: false,
             defaultValue: 1
         }
+    },
+    {
+        underscored: true,
+        createdAt: true,
+        updatedAt: true
     });
     const Organization = getModel(sequelize, "organization/organization.js");
+    const Group = getModel(sequelize, "user/group.js");
     User.belongsTo(Organization, {foreignKey: "organization_id"});
+    User.belongsTo(Group, {foreignKey: "group_id"});
     return User;
 };
