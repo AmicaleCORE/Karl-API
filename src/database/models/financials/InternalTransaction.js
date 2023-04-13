@@ -3,10 +3,9 @@ const {getModel} = require("../../../handlers/modelsHandler");
 
 module.exports = (sequelize) => {
     const InternalTransaction = sequelize.define("internal_transaction", {
-        id: {
-            type: DataTypes.INTEGER,
-            primaryKey: true,
-            autoIncrement: true
+        code: {
+            type: DataTypes.STRING(255),
+            primaryKey: true
         },
         transaction_type: {
             type: DataTypes.STRING(255),
