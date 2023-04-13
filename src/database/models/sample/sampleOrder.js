@@ -3,7 +3,7 @@ const { getModel } = require("../../../handlers/modelsHandler");
 
 module.exports = (sequelize) => {
     console.log("Loading Order model...");
-    const Order = sequelize.define("Order", {
+    const Order = sequelize.define("order", {
         id: {
             type: DataTypes.INTEGER,
             primaryKey: true,
