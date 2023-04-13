@@ -1,4 +1,4 @@
-const { DataTypes } = require("sequelize");
+const {DataTypes} = require("sequelize");
 const {getModel} = require("../../../handlers/modelsHandler");
 
 module.exports = (sequelize) => {
