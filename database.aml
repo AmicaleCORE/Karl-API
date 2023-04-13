@@ -59,6 +59,16 @@ fk periodic_transaction.destination_account_id -> internal_accounts.id
 fk periodic_transaction.source_account_id -> external_accounts.id
 fk periodic_transaction.destination_account_id -> external_accounts.id
 
+incomes | Represents an income
+  code varchar(255) pk | Code of the income
+  organization_id int | Id of the organization
+  transaction_code varchar(255) nullable | Id of the transaction, null if the income is not processed
+  tax_transaction_code varchar(255) nullable | Id of the transaction, null if the income is not processed
+  created_at date | Date of creation
+fk incomes.organization_id -> organizations.id
+fk incomes.transaction_code -> internal_transactions.code
+fk incomes.tax_transaction_code -> internal_transactions.code
+
 
 #=========# SALES #=========#
 
@@ -116,19 +126,6 @@ purchase_categories | Represents a category of purchase
   organization_id int nullable | Id of the organization, null if the category is global
   name varchar(255) | Name of the category
 fk purchase_categories.organization_id -> organizations.id
-
-
-#=========# INCOMES #=========#
-
-incomes | Represents an income
-  code varchar(255) pk | Code of the income
-  organization_id int | Id of the organization
-  transaction_code varchar(255) nullable | Id of the transaction, null if the income is not processed
-  tax_transaction_code varchar(255) nullable | Id of the transaction, null if the income is not processed
-  created_at date | Date of creation
-fk incomes.organization_id -> organizations.id
-fk incomes.transaction_code -> internal_transactions.code
-fk incomes.tax_transaction_code -> internal_transactions.code
 
 
 #=========# PERSONAL #=========#
