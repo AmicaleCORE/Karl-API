@@ -9,15 +9,15 @@ module.exports = (sequelize) => {
             autoIncrement: true
         },
         name: {
-            type: DataTypes.STRING,
+            type: DataTypes.STRING(255),
             allowNull: false
         },
         address: {
-            type: DataTypes.STRING,
+            type: DataTypes.STRING(255),
             allowNull: false
         },
         phone_number: {
-            type: DataTypes.STRING,
+            type: DataTypes.STRING(255),
             allowNull: false
         },
         logo_id: {
@@ -29,7 +29,7 @@ module.exports = (sequelize) => {
             allowNull: false
         },
         settings: {
-            type: DataTypes.STRING,
+            type: DataTypes.STRING(255),
             allowNull: false
         }
     },

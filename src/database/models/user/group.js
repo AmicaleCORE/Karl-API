@@ -12,11 +12,11 @@ module.exports = (sequelize) => {
             allowNull: true
         },
         name: {
-            type: DataTypes.STRING,
+            type: DataTypes.STRING(255),
             allowNull: false
         },
         permissions: {
-            type: DataTypes.STRING,
+            type: DataTypes.STRING(255),
             allowNull: false,
             validate: {
                 isJSON: true
