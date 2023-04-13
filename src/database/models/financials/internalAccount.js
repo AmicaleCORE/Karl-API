@@ -1,4 +1,5 @@
 const { DataTypes } = require("sequelize");
+const {getModel} = require("../../../handlers/modelsHandler");
 
 module.exports = (sequelize) => {
     const InternalAccount = sequelize.define("internal_account", {
@@ -30,7 +31,7 @@ module.exports = (sequelize) => {
         createdAt: true,
         updatedAt: true
     });
-    const Organization = require("../organizations/organization.js")(sequelize);
+    const Organization = getModel(sequelize, "organizations/organization.js");
     InternalAccount.belongsTo(Organization, {foreignKey: "organization_id"});
     return InternalAccount;
 };

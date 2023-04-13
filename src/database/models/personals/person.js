@@ -1,4 +1,5 @@
 const { DataTypes } = require("sequelize");
+const {getModel} = require("../../../handlers/modelsHandler");
 
 module.exports = (sequelize) => {
     const Person = sequelize.define("person", {
@@ -32,7 +33,7 @@ module.exports = (sequelize) => {
         createdAt: true,
         updatedAt: true
     });
-    const Organization = require("../organizations/organization.js")(sequelize);
+    const Organization = getModel(sequelize, "organisations/organization.js");
     Person.belongsTo(Organization, {foreignKey: "organization_id"});
     return Person;
 };
