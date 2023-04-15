@@ -194,7 +194,7 @@ personal_accounts | Accounts for a person
   id int pk | Id of the account
   organization_id int | Id of the organization
   person_id int | Id of the person
-  card_id varchar(255) | Id of the student card QR code
+  qr_code varchar(255) | Id of the student card QR code
   amount number = 0 | Amount of money in the account
   created_at date | Date of creation
   updated_at date | Date of last update
