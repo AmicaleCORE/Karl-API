@@ -16,6 +16,8 @@ internal_transactions | Transaction that impact an internal account
   account_id int | Id of the account
   debit_amount number = 0 | Debit amount
   credit_amount number = 0 | Credit amount
+  created_at date | Date of creation
+  updated_at date | Date of last update
 fk internal_transactions.account_id -> internal_accounts.id
 
 internal_transfers | Transfer between two internal accounts
@@ -36,7 +38,6 @@ fk external_accounts.organization_id -> organizations.id
 external_transactions | Transaction that impact an external account
   code varchar(255) pk | Code of the transaction
   transaction_type varchar(255) | Type of the transaction [hardcoded enum]
-  operation_code varchar(255) | Code of the operation (depending of the transaction type)
   account_id int | Id of the account
   debit_amount number = 0 | Debit amount
   credit_amount number = 0 | Credit amount
@@ -44,6 +45,7 @@ fk external_transactions.account_id -> external_accounts.id
 
 periodic_transaction
   id int PK | Id of the periodic transaction
+  organization_id int | Id of the organization
   source_account_id int | Id of the source account
   source_account_type varchar(255) | Type of the source account (internal or external)
   destination_account_id int | Id of the destination account
@@ -52,6 +54,7 @@ periodic_transaction
   start_date date | Indicate the date of the first transaction
   next_date date | Indicate when the periodic transaction has to be done
   period varchar(255) | Frequency of the periodic transaction (daily, weekly, monthly, yearly)
+fk periodic_transaction.organization_id -> organizations.id
 fk periodic_transaction.source_account_id -> internal_accounts.id
 fk periodic_transaction.destination_account_id -> internal_accounts.id
 fk periodic_transaction.source_account_id -> external_accounts.id
@@ -63,6 +66,7 @@ fk periodic_transaction.destination_account_id -> external_accounts.id
 sales | Represents a sale
   code varchar(255) pk | Code of the sale
   organization_id int | Id of the organization
+  author_id int | Id of the author
   price number | Price of the sale
   tax_part number | Tax part of the sale, does not include VAT
   discount_code varchar(255) nullable | Code of the discount, null if there is no discount
@@ -72,11 +76,12 @@ sales | Represents a sale
   created_at date | Date of creation
   updated_at date | Date of last update
 fk sales.organization_id -> organizations.id
-fk sales.discount_code -> discount_codes.code
+fk sales.author_id -> users.id
+fk sales.discount_code -> discounts.code
 fk sales.target_account_id -> internal_accounts.id
 fk sales.transaction_code -> internal_transactions.code
 
-discount_codes | Represents a discount code
+discounts | Represents a discount code
   code varchar(9) pk | Formatting: "d" + randCode
   organization_id int pk | ID of the organization of the discount code
   amount number | Amount of the discount
@@ -84,7 +89,7 @@ discount_codes | Represents a discount code
   validity_start datetime | Indicate when the discount code is valid
   validity_end datetime nullable | Indicate when the discount code is not valid anymore, null if no end date
   created_at date | Indicate when the discount code has been created
-fk discount_codes.organization_id -> organizations.id
+fk discounts.organization_id -> organizations.id
 
 
 #=========# PURCHASES #=========#
@@ -92,20 +97,22 @@ fk discount_codes.organization_id -> organizations.id
 purchases | Represents a purchase
   code varchar(255) pk | Code of the purchase
   organization_id int | Id of the organization
-  bill_id int | Id of the bill
   category_id int | Id of the category
+  purchase_transaction_code varchar(255) | Code of the purchase transaction
+  bill_id int | Id of the bill
+  author_id int | Id of the author
   created_at date | Date of creation
 fk purchases.organization_id -> organizations.id
-fk purchases.bill_id -> pictures.id
 fk purchases.category_id -> purchase_categories.id
+fk purchases.purchase_transaction_code -> purchases_transactions.code
+fk purchases.bill_id -> pictures.id
+fk purchases.author_id -> users.id
 
 purchases_transactions | Transactions created by a purchase
-  id int pk | Id of the transaction
-  purchase_id int | Id of the purchase
+  code varchar(255) pk | Code of the transaction
   internal_transaction_id int | Id of the internal transaction
   external_transaction_id int | Id of the external transaction
   created_at date | Date of creation
-fk purchases_transactions.purchase_id -> purchases.code
 fk purchases_transactions.internal_transaction_id -> internal_transactions.code
 fk purchases_transactions.external_transaction_id -> external_transactions.code
 
@@ -121,25 +128,43 @@ fk purchase_categories.organization_id -> organizations.id
 incomes | Represents an income
   code varchar(255) pk | Code of the income
   organization_id int | Id of the organization
-  transaction_code varchar(255) nullable | Id of the transaction, null if the income is not processed
-  tax_transaction_code varchar(255) nullable | Id of the transaction, null if the income is not processed
+  category_id int | Id of the category
+  income_transaction_code varchar(255) | Code of the income transaction
+  bill_id int nullable | Id of the bill, null if there is no bill
+  author_id int | Id of the author
   created_at date | Date of creation
 fk incomes.organization_id -> organizations.id
-fk incomes.transaction_code -> internal_transactions.code
-fk incomes.tax_transaction_code -> internal_transactions.code
+fk incomes.category_id -> income_categories.id
+fk incomes.income_transaction_code -> income_transactions.code
+fk incomes.bill_id -> pictures.id
+fk incomes.author_id -> users.id
+
+income_categories | Represents a category of income
+  id int pk | Id of the category
+  organization_id int nullable | Id of the organization, null if the category is global
+  name varchar(255) | Name of the category
+
+income_transactions | Transactions created by an income
+  code varchar(255) pk | Id of the transaction
+  internal_transaction_id int | Id of the internal transaction
+  external_transaction_id int | Id of the external transaction
+  created_at date | Date of creation
+fk income_transactions.internal_transaction_id -> internal_transactions.code
+fk income_transactions.external_transaction_id -> external_transactions.code
 
 
 #=========# PERSONAL #=========#
 
-persons | Any person
+people | Any person
   id int pk | Id of the person
   organization_id int | Id of the organization
   first_name varchar(255) | First name of the person
   last_name varchar(255) | Last name of the person
   email varchar(255) nullable | Email of the person
+  discord_id varchar(255) nullable | Discord id of the person
   created_at date | Date of creation
   updated_at date | Date of last update
-fk persons.organization_id -> organizations.id
+fk people.organization_id -> organizations.id
 
 users | Any user
   id int pk | Id of the user
@@ -171,12 +196,12 @@ personal_accounts | Accounts for a person
   id int pk | Id of the account
   organization_id int | Id of the organization
   person_id int | Id of the person
-  card_id varchar(255) | Id of the student card QR code
+  qr_code varchar(255) | Id of the student card QR code
   amount number = 0 | Amount of money in the account
   created_at date | Date of creation
   updated_at date | Date of last update
 fk personal_accounts.organization_id -> organizations.id
-fk personal_accounts.person_id -> persons.id
+fk personal_accounts.person_id -> people.id
 
 personal_transactions | Transaction on a personal account
   id int pk | Id of the transaction
@@ -188,16 +213,16 @@ personal_transactions | Transaction on a personal account
 fk personal_transactions.account_id -> personal_accounts.id
 fk personal_transactions.sale_code -> sales.code
 
-membership | Represents a membership
+memberships | Represents a membership
   id int pk | Id of the membership
   person_id int | Id of the person
-  membership_type int | Type of membership
+  membership_type_id int | Type of membership
   end_date date nullable | End date of the membership, null if no end date
   internal_transaction_code varchar(255) | Id of the internal transaction
   created_at date | Date of creation
-fk membership.person_id -> persons.id
-fk membership.membership_type -> membership_types.id
-fk membership.internal_transaction_code -> internal_transactions.code
+fk memberships.person_id -> people.id
+fk memberships.membership_type_id -> membership_types.id
+fk memberships.internal_transaction_code -> internal_transactions.code
 
 membership_types | Types of membership
   id int pk | Id of the membership type
@@ -208,48 +233,50 @@ membership_types | Types of membership
 fk membership_types.organization_id -> organizations.id
 
 
-#=========# PRODUCT MANAGEMENT #=========#
+#=========# PRODUCTS #=========#
 
 products | Represents a product
   id int pk | Id of the product
-  name varchar(255) | Name of the product
   organization_id int | Id of the organization
-  ttc_price number | Price of the product
+  name varchar(255) | Name of the product
+  price number | Price of the product
   category_id int | Id of the category
   picture_id int = 1 | Id of the picture of the product
+  created_at date | Date of creation
+  updated_at date | Date of last update
 fk products.organization_id -> organizations.id
 fk products.category_id -> product_categories.id
 fk products.picture_id -> pictures.id
 
 product_categories | Represents a category of products
   id int pk | Id of the category
-  name varchar(255) | Name of the category
   organization_id int nullable | Id of the organization, null if the category is global
+  name varchar(255) | Name of the category
 fk product_categories.organization_id -> organizations.id
 
 inventory | Represents the inventory of all products for all organizations
   id int pk | Id of the inventory
+  organization_id int | Id of the organization
   product_id int | Id of the product
   quantity int = 0 | Quantity of the product
-  organization_id int | Id of the organization
-fk inventory.product_id -> products.id
 fk inventory.organization_id -> organizations.id
+fk inventory.product_id -> products.id
 
 product_transactions | Represents a transaction on a product
   code varchar(255) pk | Code of the transaction
+  organization_id int | Id of the organization
   operation_type varchar(255) | Type of the operation [hardcoded enum]
   operation_code varchar(255) | Code of the operation (can be a sale, a purchase, an inventory correction, etc.)
   product_id int | Id of the product
   debit_amount int = 0 | Debit amount
   credit_amount int = 0 | Credit amount
-  organization_id int | Id of the organization
   author_id int | Id of the user who made the transaction
   created_at date | Date of creation
+fk product_transactions.organization_id -> organizations.id
 fk product_transactions.product_id -> products.id
 fk product_transactions.operation_code -> sales.code
 fk product_transactions.operation_code -> purchases.code
 fk product_transactions.operation_code -> inventory_corrections.code
-fk product_transactions.organization_id -> organizations.id
 fk product_transactions.author_id -> users.id
 
 inventory_corrections | Represents an inventory correction
@@ -277,11 +304,11 @@ fk inventory_correction_reasons.organization_id -> organizations.id
 
 shrinkages | Represents a shrinkage
   id int pk | Id of the shrinkage
-  product_transaction_id int | Id of the product transaction
   organization_id int | Id of the organization
+  product_transaction_id int | Id of the product transaction
   justification varchar(255) | Justification of the shrinkage
-fk shrinkages.product_transaction_id -> product_transactions.code
 fk shrinkages.organization_id -> organizations.id
+fk shrinkages.product_transaction_id -> product_transactions.code
 
 
 #=========# DONATIONS #=========#
@@ -292,7 +319,7 @@ donations | Represents a donation
   author_id int | ID of the user who created the donation
   internal_transaction_code varchar(255) | ID of the internal transaction
   created_at date | Indicate when the donation has been created
-fk donations.person_id -> persons.id
+fk donations.person_id -> people.id
 fk donations.author_id -> users.id
 fk donations.internal_transaction_code -> internal_transactions.code
 

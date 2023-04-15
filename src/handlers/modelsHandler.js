@@ -18,7 +18,6 @@ function loadModels(sequelize) {
     const files = loadFiles("./src/database/models", true);
     isLoading = true;
     files.forEach(file => {
-        // console.log(`Registering model ${file}...`);
         getModel(sequelize, file);
     });
     cachedModels = {};

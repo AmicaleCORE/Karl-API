@@ -1,5 +1,5 @@
 /* eslint-disable no-undef */
-const { Sequelize } = require("sequelize");
+const {Sequelize} = require("sequelize");
 
 let sequelize;
 if(process.env.DB_TYPE.toLowerCase() === "sqlite")
