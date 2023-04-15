@@ -38,7 +38,6 @@ fk external_accounts.organization_id -> organizations.id
 external_transactions | Transaction that impact an external account
   code varchar(255) pk | Code of the transaction
   transaction_type varchar(255) | Type of the transaction [hardcoded enum]
-  operation_code varchar(255) | Code of the operation (depending of the transaction type)
   account_id int | Id of the account
   debit_amount number = 0 | Debit amount
   credit_amount number = 0 | Credit amount
@@ -94,20 +93,22 @@ fk discount_codes.organization_id -> organizations.id
 purchases | Represents a purchase
   code varchar(255) pk | Code of the purchase
   organization_id int | Id of the organization
-  bill_id int | Id of the bill
   category_id int | Id of the category
+  purchase_transaction_code varchar(255) | Code of the purchase transaction
+  bill_id int | Id of the bill
+  author_id int | Id of the author
   created_at date | Date of creation
 fk purchases.organization_id -> organizations.id
-fk purchases.bill_id -> pictures.id
 fk purchases.category_id -> purchase_categories.id
+fk purchases.purchase_transaction_code -> purchases_transactions.code
+fk purchases.bill_id -> pictures.id
+fk purchases.author_id -> users.id
 
 purchases_transactions | Transactions created by a purchase
-  id int pk | Id of the transaction
-  purchase_id int | Id of the purchase
+  code varchar(255) pk | Code of the transaction
   internal_transaction_id int | Id of the internal transaction
   external_transaction_id int | Id of the external transaction
   created_at date | Date of creation
-fk purchases_transactions.purchase_id -> purchases.code
 fk purchases_transactions.internal_transaction_id -> internal_transactions.code
 fk purchases_transactions.external_transaction_id -> external_transactions.code
 
@@ -124,10 +125,15 @@ incomes | Represents an income
   code varchar(255) pk | Code of the income
   organization_id int | Id of the organization
   category_id int | Id of the category
+  income_transaction_code varchar(255) | Code of the income transaction
   bill_id int nullable | Id of the bill, null if there is no bill
+  author_id int | Id of the author
   created_at date | Date of creation
 fk incomes.organization_id -> organizations.id
 fk incomes.category_id -> income_categories.id
+fk incomes.income_transaction_code -> income_transactions.code
+fk incomes.bill_id -> pictures.id
+fk incomes.author_id -> users.id
 
 income_categories | Represents a category of income
   id int pk | Id of the category
@@ -135,19 +141,17 @@ income_categories | Represents a category of income
   name varchar(255) | Name of the category
 
 income_transactions | Transactions created by an income
-  id int pk | Id of the transaction
-  income_id int | Id of the income
+  code varchar(255) pk | Id of the transaction
   internal_transaction_id int | Id of the internal transaction
   external_transaction_id int | Id of the external transaction
   created_at date | Date of creation
-fk income_transactions.income_id -> incomes.code
 fk income_transactions.internal_transaction_id -> internal_transactions.code
 fk income_transactions.external_transaction_id -> external_transactions.code
 
 
 #=========# PERSONAL #=========#
 
-persons | Any person
+people | Any person
   id int pk | Id of the person
   organization_id int | Id of the organization
   first_name varchar(255) | First name of the person
@@ -156,7 +160,7 @@ persons | Any person
   discord_id varchar(255) nullable | Discord id of the person
   created_at date | Date of creation
   updated_at date | Date of last update
-fk persons.organization_id -> organizations.id
+fk people.organization_id -> organizations.id
 
 users | Any user
   id int pk | Id of the user
@@ -193,7 +197,7 @@ personal_accounts | Accounts for a person
   created_at date | Date of creation
   updated_at date | Date of last update
 fk personal_accounts.organization_id -> organizations.id
-fk personal_accounts.person_id -> persons.id
+fk personal_accounts.person_id -> people.id
 
 personal_transactions | Transaction on a personal account
   id int pk | Id of the transaction
@@ -212,7 +216,7 @@ memberships | Represents a membership
   end_date date nullable | End date of the membership, null if no end date
   internal_transaction_code varchar(255) | Id of the internal transaction
   created_at date | Date of creation
-fk memberships.person_id -> persons.id
+fk memberships.person_id -> people.id
 fk memberships.membership_type_id -> membership_types.id
 fk memberships.internal_transaction_code -> internal_transactions.code
 
@@ -309,7 +313,7 @@ donations | Represents a donation
   author_id int | ID of the user who created the donation
   internal_transaction_code varchar(255) | ID of the internal transaction
   created_at date | Indicate when the donation has been created
-fk donations.person_id -> persons.id
+fk donations.person_id -> people.id
 fk donations.author_id -> users.id
 fk donations.internal_transaction_code -> internal_transactions.code
 
