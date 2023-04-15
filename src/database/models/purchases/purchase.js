@@ -36,10 +36,12 @@ module.exports = (sequelize) => {
     const Organization = getModel(sequelize, "organizations/organization.js");
     const PurchaseCategory = getModel(sequelize, "purchases/purchaseCategory.js");
     const PurchaseTransaction = getModel(sequelize, "purchases/purchaseTransaction.js");
+    const Picture = getModel(sequelize, "pictures/picture.js");
     const User = getModel(sequelize, "personals/user.js");
     Purchase.belongsTo(Organization, {foreignKey: "organization_id"});
     Purchase.belongsTo(PurchaseCategory, {foreignKey: "category_id"});
     Purchase.belongsTo(PurchaseTransaction, {foreignKey: "purchase_transaction_code"});
+    Purchase.belongsTo(Picture, {foreignKey: "bill_id"});
     Purchase.belongsTo(User, {foreignKey: "author_id"});
     return Purchase;
 };

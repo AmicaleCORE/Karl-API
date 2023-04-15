@@ -36,10 +36,12 @@ module.exports = (sequelize) => {
     const Organization = getModel(sequelize, "organizations/organization.js");
     const IncomeCategory = getModel(sequelize, "incomes/incomeCategory.js");
     const IncomeTransaction = getModel(sequelize, "incomes/incomeTransaction.js");
+    const Picture = getModel(sequelize, "pictures/picture.js");
     const User = getModel(sequelize, "personals/user.js");
     Income.belongsTo(Organization, {foreignKey: "organization_id"});
     Income.belongsTo(IncomeCategory, {foreignKey: "category_id"});
     Income.belongsTo(IncomeTransaction, {foreignKey: "income_transaction_code"});
+    Income.belongsTo(Picture, {foreignKey: "bill_id"});
     Income.belongsTo(User, {foreignKey: "author_id"});
     return Income;
 };
