@@ -66,6 +66,7 @@ fk periodic_transaction.destination_account_id -> external_accounts.id
 sales | Represents a sale
   code varchar(255) pk | Code of the sale
   organization_id int | Id of the organization
+  author_id int | Id of the author
   price number | Price of the sale
   tax_part number | Tax part of the sale, does not include VAT
   discount_code varchar(255) nullable | Code of the discount, null if there is no discount
@@ -75,11 +76,12 @@ sales | Represents a sale
   created_at date | Date of creation
   updated_at date | Date of last update
 fk sales.organization_id -> organizations.id
-fk sales.discount_code -> discount_codes.code
+fk sales.author_id -> users.id
+fk sales.discount_code -> discounts.code
 fk sales.target_account_id -> internal_accounts.id
 fk sales.transaction_code -> internal_transactions.code
 
-discount_codes | Represents a discount code
+discounts | Represents a discount code
   code varchar(9) pk | Formatting: "d" + randCode
   organization_id int pk | ID of the organization of the discount code
   amount number | Amount of the discount
@@ -87,7 +89,7 @@ discount_codes | Represents a discount code
   validity_start datetime | Indicate when the discount code is valid
   validity_end datetime nullable | Indicate when the discount code is not valid anymore, null if no end date
   created_at date | Indicate when the discount code has been created
-fk discount_codes.organization_id -> organizations.id
+fk discounts.organization_id -> organizations.id
 
 
 #=========# PURCHASES #=========#
