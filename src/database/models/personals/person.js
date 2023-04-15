@@ -26,6 +26,10 @@ module.exports = (sequelize) => {
             validate: {
                 isEmail: true
             }
+        },
+        discord_id: {
+            type: DataTypes.BIGINT,
+            allowNull: true
         }
     },
     {

@@ -62,12 +62,17 @@ fk periodic_transaction.destination_account_id -> external_accounts.id
 incomes | Represents an income
   code varchar(255) pk | Code of the income
   organization_id int | Id of the organization
-  transaction_code varchar(255) nullable | Id of the transaction, null if the income is not processed
-  tax_transaction_code varchar(255) nullable | Id of the transaction, null if the income is not processed
+  transaction_code varchar(255) | Id of the transaction
+  income_category_id int | Id of the category
   created_at date | Date of creation
 fk incomes.organization_id -> organizations.id
 fk incomes.transaction_code -> internal_transactions.code
-fk incomes.tax_transaction_code -> internal_transactions.code
+fk incomes.income_category_id -> income_categories.id
+
+income_categories | Represents a category of income
+  id int pk | Id of the category
+  organization_id int nullable | Id of the organization, null if the category is global
+  name varchar(255) | Name of the category
 
 
 #=========# SALES #=========#
@@ -136,6 +141,7 @@ persons | Any person
   first_name varchar(255) | First name of the person
   last_name varchar(255) | Last name of the person
   email varchar(255) nullable | Email of the person
+  discord_id varchar(255) nullable | Discord id of the person
   created_at date | Date of creation
   updated_at date | Date of last update
 fk persons.organization_id -> organizations.id
