@@ -59,21 +59,6 @@ fk periodic_transaction.destination_account_id -> internal_accounts.id
 fk periodic_transaction.source_account_id -> external_accounts.id
 fk periodic_transaction.destination_account_id -> external_accounts.id
 
-incomes | Represents an income
-  code varchar(255) pk | Code of the income
-  organization_id int | Id of the organization
-  transaction_code varchar(255) | Id of the transaction
-  income_category_id int | Id of the category
-  created_at date | Date of creation
-fk incomes.organization_id -> organizations.id
-fk incomes.transaction_code -> internal_transactions.code
-fk incomes.income_category_id -> income_categories.id
-
-income_categories | Represents a category of income
-  id int pk | Id of the category
-  organization_id int nullable | Id of the organization, null if the category is global
-  name varchar(255) | Name of the category
-
 
 #=========# SALES #=========#
 
@@ -131,6 +116,33 @@ purchase_categories | Represents a category of purchase
   organization_id int nullable | Id of the organization, null if the category is global
   name varchar(255) | Name of the category
 fk purchase_categories.organization_id -> organizations.id
+
+
+#=========# INCOMES #=========#
+
+incomes | Represents an income
+  code varchar(255) pk | Code of the income
+  organization_id int | Id of the organization
+  category_id int | Id of the category
+  bill_id int nullable | Id of the bill, null if there is no bill
+  created_at date | Date of creation
+fk incomes.organization_id -> organizations.id
+fk incomes.category_id -> income_categories.id
+
+income_categories | Represents a category of income
+  id int pk | Id of the category
+  organization_id int nullable | Id of the organization, null if the category is global
+  name varchar(255) | Name of the category
+
+income_transactions | Transactions created by an income
+  id int pk | Id of the transaction
+  income_id int | Id of the income
+  internal_transaction_id int | Id of the internal transaction
+  external_transaction_id int | Id of the external transaction
+  created_at date | Date of creation
+fk income_transactions.income_id -> incomes.code
+fk income_transactions.internal_transaction_id -> internal_transactions.code
+fk income_transactions.external_transaction_id -> external_transactions.code
 
 
 #=========# PERSONAL #=========#
@@ -193,16 +205,16 @@ personal_transactions | Transaction on a personal account
 fk personal_transactions.account_id -> personal_accounts.id
 fk personal_transactions.sale_code -> sales.code
 
-membership | Represents a membership
+memberships | Represents a membership
   id int pk | Id of the membership
   person_id int | Id of the person
   membership_type_id int | Type of membership
   end_date date nullable | End date of the membership, null if no end date
   internal_transaction_code varchar(255) | Id of the internal transaction
   created_at date | Date of creation
-fk membership.person_id -> persons.id
-fk membership.membership_type -> membership_types.id
-fk membership.internal_transaction_code -> internal_transactions.code
+fk memberships.person_id -> persons.id
+fk memberships.membership_type_id -> membership_types.id
+fk memberships.internal_transaction_code -> internal_transactions.code
 
 membership_types | Types of membership
   id int pk | Id of the membership type
