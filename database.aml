@@ -233,48 +233,50 @@ membership_types | Types of membership
 fk membership_types.organization_id -> organizations.id
 
 
-#=========# PRODUCT MANAGEMENT #=========#
+#=========# PRODUCTS #=========#
 
 products | Represents a product
   id int pk | Id of the product
-  name varchar(255) | Name of the product
   organization_id int | Id of the organization
-  ttc_price number | Price of the product
+  name varchar(255) | Name of the product
+  price number | Price of the product
   category_id int | Id of the category
   picture_id int = 1 | Id of the picture of the product
+  created_at date | Date of creation
+  updated_at date | Date of last update
 fk products.organization_id -> organizations.id
 fk products.category_id -> product_categories.id
 fk products.picture_id -> pictures.id
 
 product_categories | Represents a category of products
   id int pk | Id of the category
-  name varchar(255) | Name of the category
   organization_id int nullable | Id of the organization, null if the category is global
+  name varchar(255) | Name of the category
 fk product_categories.organization_id -> organizations.id
 
 inventory | Represents the inventory of all products for all organizations
   id int pk | Id of the inventory
+  organization_id int | Id of the organization
   product_id int | Id of the product
   quantity int = 0 | Quantity of the product
-  organization_id int | Id of the organization
-fk inventory.product_id -> products.id
 fk inventory.organization_id -> organizations.id
+fk inventory.product_id -> products.id
 
 product_transactions | Represents a transaction on a product
   code varchar(255) pk | Code of the transaction
+  organization_id int | Id of the organization
   operation_type varchar(255) | Type of the operation [hardcoded enum]
   operation_code varchar(255) | Code of the operation (can be a sale, a purchase, an inventory correction, etc.)
   product_id int | Id of the product
   debit_amount int = 0 | Debit amount
   credit_amount int = 0 | Credit amount
-  organization_id int | Id of the organization
   author_id int | Id of the user who made the transaction
   created_at date | Date of creation
+fk product_transactions.organization_id -> organizations.id
 fk product_transactions.product_id -> products.id
 fk product_transactions.operation_code -> sales.code
 fk product_transactions.operation_code -> purchases.code
 fk product_transactions.operation_code -> inventory_corrections.code
-fk product_transactions.organization_id -> organizations.id
 fk product_transactions.author_id -> users.id
 
 inventory_corrections | Represents an inventory correction
@@ -302,11 +304,11 @@ fk inventory_correction_reasons.organization_id -> organizations.id
 
 shrinkages | Represents a shrinkage
   id int pk | Id of the shrinkage
-  product_transaction_id int | Id of the product transaction
   organization_id int | Id of the organization
+  product_transaction_id int | Id of the product transaction
   justification varchar(255) | Justification of the shrinkage
-fk shrinkages.product_transaction_id -> product_transactions.code
 fk shrinkages.organization_id -> organizations.id
+fk shrinkages.product_transaction_id -> product_transactions.code
 
 
 #=========# DONATIONS #=========#
