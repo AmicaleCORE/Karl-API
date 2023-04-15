@@ -47,7 +47,7 @@ module.exports = (sequelize) => {
     });
     const Organization = getModel(sequelize, "organizations/organization.js");
     const User = getModel(sequelize, "personals/user.js");
-    const DiscountCode = getModel(sequelize, "sales/discountCode.js");
+    const DiscountCode = getModel(sequelize, "sales/discount.js");
     const InternalAccount = getModel(sequelize, "financials/internalAccount.js");
     const InternalTransaction = getModel(sequelize, "financials/internalTransaction.js");
     Sale.belongsTo(Organization, {foreignKey: "organization_id"});
