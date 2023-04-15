@@ -32,7 +32,7 @@ module.exports = (sequelize) => {
     });
     const Organization = getModel(sequelize, "organizations/organization.js");
     const ProductTransaction = getModel(sequelize, "products/productTransaction.js");
-    const CorrectionReason = getModel(sequelize, "products/correctionReason.js");
+    const CorrectionReason = getModel(sequelize, "products/inventoryCorrectionReason.js");
     MinorInventoryCorrection.belongsTo(Organization, {foreignKey: "organization_id"});
     MinorInventoryCorrection.belongsTo(ProductTransaction, {foreignKey: "product_transaction_code"});
     MinorInventoryCorrection.belongsTo(CorrectionReason, {foreignKey: "correction_reason_id"});

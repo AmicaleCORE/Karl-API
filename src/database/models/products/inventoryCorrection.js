@@ -22,7 +22,7 @@ module.exports = (sequelize) => {
         updatedAt: false
     });
     const Organization = getModel(sequelize, "organizations/organization.js");
-    const CorrectionReason = getModel(sequelize, "products/correctionReason.js");
+    const CorrectionReason = getModel(sequelize, "products/inventoryCorrectionReason.js");
     InventoryCorrection.belongsTo(Organization, {foreignKey: "organization_id"});
     InventoryCorrection.belongsTo(CorrectionReason, {foreignKey: "correction_reason_id"});
     return InventoryCorrection;

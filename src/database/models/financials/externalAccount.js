@@ -1,5 +1,4 @@
 const {DataTypes} = require("sequelize");
-const {getModel} = require("../../../handlers/modelsHandler");
 
 module.exports = (sequelize) => {
     return sequelize.define("external_account", {
