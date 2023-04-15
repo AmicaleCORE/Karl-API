@@ -19,7 +19,7 @@ module.exports = (sequelize) => {
     {
         underscored: true,
         createdAt: true,
-        updatedAt: true
+        updatedAt: false
     });
     const Organization = getModel(sequelize, "organizations/organization.js");
     const CorrectionReason = getModel(sequelize, "products/correctionReason.js");
