@@ -16,7 +16,6 @@ else
         logging: process.env.DB_LOGGING.toLowerCase() === "true"
     });
 
-
 // Loading models
 require("../handlers/modelsHandler").loadModels(sequelize);
 
@@ -24,3 +23,5 @@ sequelize.sync().then(() => {
     console.log("Database synchronized");
     // TODO: Add defaults and seed if needed
 });
+
+module.exports = sequelize;
