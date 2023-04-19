@@ -5,16 +5,20 @@ let isLoading = false;
 
 function getModel(sequelize, file) {
     if(isLoading === false)
-        throw new Error("Models are not loaded yet!");
+        throw new Error("Models are not loading yet!");
     if(!cachedModels[file]){
-        console.log(`Model ${file} not registered, registering...`);
-        cachedModels[file] = require(`../database/models/${file}`)(sequelize);
-    }else
-        console.log(`Model ${file} already registered, returning...`);
+        try{
+            cachedModels[file] = require(`../database/models/${file}`)(sequelize);
+            console.log(`✅  Model ${file} registered!`);
+        } catch (e){
+            console.error(`❌  Error while registering model ${file}: ${e}`);
+        }
+    }
     return cachedModels[file];
 }
 
 function loadModels(sequelize) {
+    console.log("------ Loading models ------");
     const files = loadFiles("./src/database/models", true);
     isLoading = true;
     files.forEach(file => {
