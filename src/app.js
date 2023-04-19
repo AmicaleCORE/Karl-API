@@ -13,8 +13,10 @@ require("./database/sequelize");
 const cors = require("cors");
 const helmet = require("helmet");
 const rateLimit = require("express-rate-limit");
+const morgan = require("morgan");
 
 // Init middlewares
+app.use(morgan("dev"));
 app.use(express.json());
 app.use(express.urlencoded({extended: true}));
 app.use(cors());
@@ -26,8 +28,9 @@ app.use(rateLimit({
     legacyHeaders: false,
 }));
 
-// TODO: Route registering
-// require("./handlers/RoutesHandler")(app);
+const router = express.Router();
+require("./handlers/RoutesHandler")(router);
+app.use("/api/v1", router);
 
 // Default route
 app.use(({res}) => res.status(404).json({message: "Route not found"}));
