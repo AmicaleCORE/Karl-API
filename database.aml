@@ -342,7 +342,7 @@ fk organizations.logo_id -> pictures.id
 licenses | Represents a license
   id int pk | ID of the license
   key varchar(255) unique | License key
-  mail varchar(255) | Mail link to the license
+  mail varchar(255) unique | Mail link to the license
   expiration_date date | Expiration date of the license
   stripe_subscription_id varchar(255) | ID of the subscription on Stripe
   created_at date | Indicate when the license has been created

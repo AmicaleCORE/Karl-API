@@ -17,7 +17,8 @@ module.exports = (sequelize) => {
             allowNull: false,
             validate: {
                 isEmail: true
-            }
+            },
+            unique: true
         },
         expiration_date: {
             type: DataTypes.DATE,
