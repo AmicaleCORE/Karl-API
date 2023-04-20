@@ -1,3 +1,4 @@
+/* eslint-disable no-undef */
 const stripe = require("stripe")(process.env.STRIPE_SECRET_KEY);
 const sequelize = require("../../database/sequelize");
 const codeUtils = require("../../utils/codeUtils");
@@ -16,12 +17,12 @@ const createCheckoutSession = async (req, res) => {
     if(license)
         return res.status(400).json({message: "License already exists"});
     const session = await stripe.checkout.sessions.create({
-        payment_method_types: ['card'],
+        payment_method_types: ["card"],
         line_items: [{
             price: process.env.STRIPE_PRICE_ID,
             quantity: 1
         }],
-        mode: 'subscription',
+        mode: "subscription",
         success_url: successUrl,
         cancel_url: cancelUrl,
         customer_email: email
@@ -30,7 +31,7 @@ const createCheckoutSession = async (req, res) => {
         id: session.id,
         url: session.url
     });
-}
+};
 
 const verifyPayment = async (req, res) => {
     const session = await stripe.checkout.sessions.retrieve(req.body.sessionId);
@@ -48,7 +49,7 @@ const verifyPayment = async (req, res) => {
     });
     // TODO: Send email to user
     return res.status(200).json(license);
-}
+};
 
 const verifyValidity = async (req, res) => {
     const queryLicense = req.params.license;
@@ -64,7 +65,7 @@ const verifyValidity = async (req, res) => {
     if(lastPayementDate.setMonth(lastPayementDate.getMonth() + 1) < new Date())
         return res.status(400).json({message: "License expired"});
     return res.status(200).json(license);
-}
+};
 
 const cancelSubscription = async (req, res) => {
     const queryLicense = req.params.license;
@@ -76,11 +77,11 @@ const cancelSubscription = async (req, res) => {
         return res.status(400).json({message: "Subscription already cancelled"});
     await stripe.subscriptions.del(license.stripe_subscription_id);
     return res.status(200).json({message: "Subscription cancelled"});
-}
+};
 
 module.exports = {
     createCheckoutSession,
     verifyPayment,
     verifyValidity,
     cancelSubscription
-}
+};

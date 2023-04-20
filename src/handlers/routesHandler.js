@@ -1,8 +1,8 @@
-const loadFiles = require('./filesHandler');
+const loadFiles = require("./filesHandler");
 
 module.exports = (router) => {
-    console.log('------ Loading routes ------');
-    const files = loadFiles('./src/rest/routes', true);
+    console.log("------ Loading routes ------");
+    const files = loadFiles("./src/rest/routes", true);
     files.forEach(file => {
         try{
             require(`../rest/routes/${file}`)(router);
@@ -10,5 +10,5 @@ module.exports = (router) => {
         } catch (e){
             console.error(`❌  Error while registering route ${file}: ${e}`);
         }
-    })
-}
+    });
+};

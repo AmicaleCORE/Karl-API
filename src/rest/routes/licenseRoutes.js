@@ -17,4 +17,4 @@ module.exports = (router) => {
     router.delete("/license/:license", async (req, res) => {
         await licenseController.cancelSubscription(req, res);
     });
-}
+};
