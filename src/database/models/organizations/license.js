@@ -22,6 +22,10 @@ module.exports = (sequelize) => {
         expiration_date: {
             type: DataTypes.DATE,
             allowNull: false
+        },
+        stripe_subscription_id: {
+            type: DataTypes.STRING(255),
+            allowNull: false
         }
     },
     {
